@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Composite V5 — University News prototype</title>
+<link rel="stylesheet" href="https://use.typekit.net/kab0ulp.css">
+<link rel="stylesheet" href="shared.css">
+<style>
+/* typography: match the live homepage's v3 headlines —
+   kepler-std condensed at weight medium */
+.headline { font-family: var(--font-serif-condensed); font-weight: 500; letter-spacing: 0; line-height: 1.1; }
+
+.cat-head { padding-block: var(--sp-medium) var(--sp-micro); text-align: center; }
+.cat-head h1 { font-family: var(--h1-font, var(--font-display-condensed)); font-size: clamp(36px, 5vw, 48px); font-weight: var(--h1-weight, 400); letter-spacing: 0; line-height: 1.2; }
+
+/* combined category bar: small heading left, topic links right */
+.cat-bar { position: sticky; top: 63px; z-index: 90; background: var(--ngn-v2-sys-color-surface); border-bottom: 1px solid var(--ngn-v2-sys-color-outline-variant); }
+.cat-bar__inner { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-base) var(--sp-large); padding-block: var(--sp-compact); flex-wrap: wrap; }
+.cat-bar h1 { font-family: var(--h1-font, var(--font-display-condensed)); font-weight: var(--h1-weight, 400); font-size: 28px; line-height: 1.1; letter-spacing: 0; }
+.cat-bar__links { display: flex; flex-wrap: wrap; gap: var(--sp-base) var(--sp-medium); font-size: 15px; font-weight: 500; }
+.cat-bar__links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* prototype-only H1 font switcher */
+.proto-font-tool { position: fixed; bottom: 16px; right: 16px; z-index: 300; display: flex; gap: 10px; align-items: center; background: var(--ngn-v2-sys-color-inverse-surface); color: var(--ngn-v2-sys-color-inverse-on-surface); padding: 10px 14px; border-radius: var(--shape-sm); font-size: 12px; font-weight: 700; box-shadow: 0 4px 16px rgb(0 0 0 / 30%); }
+.proto-font-tool label { display: flex; gap: 6px; align-items: center; }
+.proto-font-tool select { font: 12px var(--font-sans); border-radius: var(--shape-xs); border: 0; padding: 4px 6px; }
+.topic-line { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--sp-base) var(--sp-large); padding-block: var(--sp-compact); border-bottom: 1px solid var(--ngn-v2-sys-color-outline-variant); font-size: 15px; font-weight: 500; }
+.topic-line a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* Time-inspired featured trio */
+.featured-band { padding-block: var(--sp-xl); }
+.featured-trio { display: grid; grid-template-columns: 1fr; gap: var(--sp-large); align-items: start; }
+@media (width >= 840px) { .featured-trio { grid-template-columns: 1fr 2fr 1fr; } }
+.featured-trio .story--center { text-align: center; }
+@media (width >= 840px) { .featured-trio .story--center { order: 0; } .featured-trio .story--left { order: -1; } }
+.featured-trio .story--center .headline { font-size: clamp(28px, 3vw, 40px); margin-top: var(--sp-compact); line-height: 1.1; }
+.featured-trio .story--side .headline { font-size: 24px; margin-top: var(--sp-small); }
+.featured-trio .post-meta { margin-top: var(--sp-base); font-size: 13.6px; }
+.featured-trio .story--side .media-frame img { aspect-ratio: 4 / 3; }
+@media (width >= 840px) { .featured-trio .story--side { padding-top: var(--sp-large); } }
+
+/* sticky appbar: the bar's is-sticky needs a parent that spans the page,
+   so pin the site-header wrapper itself */
+.site-header { position: sticky; top: 0; z-index: 100; }
+
+/* sticky topic subnav (below the sticky appbar) */
+.topic-nav { position: sticky; top: 63px; z-index: 90; background: var(--ngn-v2-sys-color-surface); border-bottom: 1px solid var(--ngn-v2-sys-color-outline-variant); }
+.topic-nav .topic-line { border-bottom: 0; }
+
+/* scroll-condense logo: wordmark letters collapse into the NGN monogram */
+.ngn-wordmark--anim path,
+.ngn-wordmark--anim polygon { transition: opacity 0.35s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+.app-bar__logo--desktop svg { transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+/* condensed targets derived from the NGN monogram asset: uniform 15.56u
+   gaps at 102u letter height → 11.3u at the wordmark's 72u letters;
+   arrow at half letter height, top-aligned */
+.ngn-bar.is-condensed .app-bar__logo--desktop svg { transform: translateX(147px); }
+.ngn-bar.is-condensed .wm-fade { opacity: 0; }
+.ngn-bar.is-condensed .wm-w2,
+.ngn-bar.is-condensed .wm-k1 { transform: translateX(-543px); }
+.ngn-bar.is-condensed .wm-w3,
+.ngn-bar.is-condensed .wm-k2 { transform: translateX(-777px); }
+.ngn-bar.is-condensed .wm-w1 { transform: translateX(-80px); }
+.ngn-wordmark--anim .wm-arrow { transform-box: fill-box; transform-origin: 0 0; }
+.ngn-bar.is-condensed .wm-arrow { transform: translate(-972px, 0) scale(0.5); }
+@media (prefers-reduced-motion: reduce) {
+	.ngn-wordmark--anim path, .ngn-wordmark--anim polygon, .app-bar__logo--desktop svg { transition: none; }
+}
+
+/* NYT-inspired river + sticky newsletter rail */
+.latest-shell { display: grid; grid-template-columns: 1fr; gap: var(--sp-xl); align-items: start; }
+@media (width >= 840px) { .latest-shell { grid-template-columns: 2fr 1fr; } }
+.river { min-width: 0; }
+.river-label { font-size: 12px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; padding-block: var(--sp-large) var(--sp-small); border-bottom: 2px solid var(--ngn-v2-sys-color-on-surface); margin-top: var(--sp-base); }
+.river > .story.is-mode-rich { padding-block: var(--sp-medium); }
+.river .story.is-mode-rich + .story.is-mode-rich { border-top: 1px solid var(--ngn-v2-sys-color-outline-variant); }
+.river > .story .story--rich { display: grid; grid-template-columns: 1fr; gap: var(--sp-medium); align-items: start; }
+@media (width >= 600px) { .river > .story .story--rich { grid-template-columns: 8fr 4fr; } }
+.river .blurb { margin-top: var(--sp-base); }
+.river .post-meta { margin-top: var(--sp-base); }
+
+/* interest-capture newsletter signup, sticky beside the river */
+.newsletter-rail { position: sticky; top: 140px; margin-top: calc(var(--sp-large) + 34px); }
+.newsletter-panel { background: var(--ngn-v2-sys-color-surface-container); border-radius: var(--shape-md); padding: var(--sp-medium); }
+.newsletter-panel h2 { font-family: var(--font-serif-condensed); font-size: 23px; font-weight: 500; line-height: 1.15; }
+.newsletter-panel .dek { font-size: 13.6px; color: var(--ngn-v2-sys-color-on-surface-variant); margin-top: var(--sp-base); }
+.newsletter-panel fieldset { border: 0; margin: var(--sp-compact) 0 0; padding: 0; }
+.newsletter-panel legend { font-size: 12px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; padding: 0; margin-bottom: var(--sp-small); }
+.newsletter-panel .interests { display: flex; flex-wrap: wrap; gap: var(--sp-base); }
+.newsletter-panel .interests label { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--ngn-v2-sys-color-outline-variant); border-radius: var(--shape-full); padding: 6px 14px; font-size: 13px; font-weight: 700; cursor: pointer; background: var(--ngn-v2-sys-color-surface); }
+.newsletter-panel .interests label:has(input:checked) { background: var(--ngn-v2-sys-color-inverse-surface); color: var(--ngn-v2-sys-color-inverse-on-surface); border-color: var(--ngn-v2-sys-color-inverse-surface); }
+.newsletter-panel .interests input { appearance: none; margin: 0; }
+.newsletter-panel .interests label:has(input:checked)::before { content: "\2713"; font-size: 11px; }
+.newsletter-panel .email-row { display: flex; gap: var(--sp-base); margin-top: var(--sp-compact); }
+.newsletter-panel input[type="email"] { flex: 1; min-width: 0; border: 1px solid var(--ngn-v2-sys-color-outline); border-radius: var(--shape-full); padding: 10px 16px; font: 14px var(--font-sans); background: var(--ngn-v2-sys-color-surface); }
+.newsletter-panel button { border: 0; background: var(--ngn-v2-sys-color-primary); color: var(--ngn-v2-sys-color-on-primary); font-weight: 700; font-size: 13.6px; padding: 10px 20px; border-radius: var(--shape-full); cursor: pointer; }
+/* sans-serif deks under headlines */
+.blurb { font-family: var(--font-sans); font-size: 15px; }
+
+/* closing topic groups — 4 stories per curated tag */
+.topic-group { padding-block: var(--sp-xl) 0; }
+.topic-group .section-label { padding-bottom: var(--sp-small); border-bottom: 2px solid var(--ngn-v2-sys-color-on-surface); margin-bottom: var(--sp-medium); text-transform: none; font-size: 19px; letter-spacing: 0; }
+.topic-group .more-btn { margin-left: auto; font-size: 12px; font-weight: 700; letter-spacing: 0.4px; color: var(--ngn-v2-sys-color-primary); white-space: nowrap; }
+.topic-group .more-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+.band-grid { display: grid; grid-template-columns: 1fr; gap: var(--sp-large) var(--sp-medium); }
+@media (width >= 600px) { .band-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (width >= 840px) { .band-grid { grid-template-columns: repeat(4, 1fr); } }
+.band-grid .headline { font-size: 20px !important; margin-top: var(--sp-small); }
+.band-grid .blurb { display: none; }
+.band-grid .post-meta { margin-top: var(--sp-micro); }
+
+/* v2 featured package: dominant lead with overlapping headline box + rail */
+.featured-bi { padding-block: var(--sp-medium) var(--sp-large); }
+.featured-bi__grid { display: grid; grid-template-columns: 1fr; gap: var(--sp-large); align-items: start; }
+@media (width >= 840px) { .featured-bi__grid { grid-template-columns: 2fr 1fr; } }
+.featured-bi__lead { position: relative; }
+.featured-bi__lead .media-frame img { aspect-ratio: 16 / 10; }
+.featured-bi__lead .lead-box { position: static; background: var(--ngn-v2-sys-color-surface); padding: var(--sp-compact) 0 0; }
+@media (width >= 840px) { .featured-bi__lead .lead-box { position: absolute; left: 0; bottom: 0; max-width: 78%; padding: var(--sp-medium) var(--sp-medium) 0 0; } }
+.featured-bi__lead .headline { font-size: clamp(24px, 2.6vw, 34px); }
+.featured-bi__lead .post-meta { margin-top: var(--sp-base); }
+.featured-bi__rail .story + .story { border-top: 1px solid var(--ngn-v2-sys-color-outline-variant); margin-top: var(--sp-compact); padding-top: var(--sp-compact); }
+.featured-bi__rail .story--top .headline { font-size: 21px; margin-top: var(--sp-small); }
+.featured-bi__rail .story--thumb-row a { display: grid; grid-template-columns: 1fr 96px; gap: var(--sp-compact); align-items: start; }
+.featured-bi__rail .story--thumb-row .headline { font-size: 20px; }
+.featured-bi__rail .story--thumb-row .media-frame img { aspect-ratio: 4 / 3; }
+.featured-bi__rail .post-meta { margin-top: 6px; }
+
+@media (width >= 840px) {
+	.featured-bi__lead .lead-box { position: static; max-width: none; padding: var(--sp-compact) 0 0; }
+}
+</style>
+</head>
+<body>
+<a href="#site-content" class="screen-reader-text">Skip to content</a>
+<header class="site-header">
+<div class="ngn-bar is-config-logo-and-date has-bottom-divider is-sticky">
+  <div class="bar__wrapper">
+    <div class="app-bar__leading">
+      <button class="icon-button" aria-label="Menu"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg></button>
+    </div>
+    <a class="app-bar__logo-link" href="https://news.northeastern.edu" rel="home"
+       aria-label="Northeastern Global News">
+      <span class="app-bar__logo app-bar__logo--mobile" style="height:24px"><svg class="ngn-lettermark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 276.7 74.13">
+    <defs>
+        <style>
+            .ngn-lettermark__shapes {fill: var(--wp--custom--color--emphasize, #000) }
+            .ngn-lettermark__shapes-arrow {fill: var(--wp--custom--color--accent, #cf2b28) }
+        </style>
+    </defs>
+    <polygon class="ngn-lettermark__shapes ngn-lettermark__shapes-arrow"
+             points="240.67 1.01 240.67 8.21 264.23 8.21 243.23 29.21 248.32 34.31 269.5 13.12 269.5 37.04 276.7 37.04 276.7 1.01 240.67 1.01"/>
+    <path class="ngn-lettermark__shapes ngn-lettermark__shapes-n-start" d="M0,73.07V1.06H12.99L52.81,50.48V1.06h14.32V73.07h-13.2L14.32,24.18v48.89H0Z"/>
+    <path class="ngn-lettermark__shapes ngn-lettermark__shapes-g" d="M78.46,37.06C78.46,16.01,94.36,0,115.41,0c12.46,0,23.97,5.94,31.55,16.91l-11.29,8.06c-5.62-8.48-12.94-11.72-20.26-11.72-13.1,0-22.27,9.86-22.27,23.81s9.54,23.81,22.64,23.81c11.98,0,18.72-7.05,20.36-14.69h-21.79v-12.35h36.27c.21,1.86,.26,3.98,.26,5.78,0,18.51-13.04,34.52-35.1,34.52s-37.33-16.01-37.33-37.06Z"/>
+    <path class="ngn-lettermark__shapes ngn-lettermark__shapes-n-end" d="M162.22,73.07V1.06h12.99l39.82,49.42V1.06h14.32V73.07h-13.2l-39.61-48.89v48.89h-14.32Z"/>
+</svg></span>
+      <span class="app-bar__logo app-bar__logo--desktop" style="height:22px"><svg class="ngn-wordmark ngn-wordmark--anim" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1284 75.66">
+    <defs>
+        <style>
+            .ngn-wordmark__shapes {fill: var(--wp--custom--color--emphasize, #000) }
+            .ngn-wordmark__shapes-arrow {fill: var(--wp--custom--color--accent, #cf2b28) }
+        </style>
+    </defs>
+    <polygon class="ngn-wordmark__shapes ngn-wordmark__shapes-arrow wm-arrow"
+             points="1212.05 2.59 1212.05 16.97 1259.1 16.97 1217.15 58.92 1227.32 69.09 1269.62 26.79 1269.62 74.55 1284 74.55 1284 2.59 1212.05 2.59"/>
+    <g class="ngn-wordmark__shapes">
+        <path class="wm-k0" d="M0,74.55V2.65H12.97L52.73,51.99V2.65h14.29V74.55h-13.18L14.29,25.73v48.82H0Z"/>
+        <path class="wm-fade wm-w1" d="M74.54,49.13c0-14.98,11.6-26.47,27.16-26.47s27.16,11.49,27.16,26.47-11.54,26.47-27.16,26.47-27.16-11.44-27.16-26.47Zm27.16,14.19c7.99,0,13.66-6.04,13.66-14.19s-5.67-14.14-13.66-14.14-13.66,6.04-13.66,14.14,5.72,14.19,13.66,14.19Z"/>
+        <path class="wm-fade wm-w1" d="M135.09,23.72h13.13l.26,6.94c2.59-5.29,7.52-7.99,13.24-7.99,3.02,0,5.56,.79,6.62,1.16l-1.06,12.12c-1.38-.48-3.6-1.16-6.3-1.16-5.98,0-12.28,3.23-12.28,13.71v26.05h-13.61V23.72Z"/>
+        <path class="wm-fade wm-w1" d="M166.21,35v-11.28h8.63V7.41h13.18V23.72h15.25v11.28h-14.93v20.91c0,5.29,2.96,7.62,7.52,7.62,2.54,0,5.77-.58,8.63-1.75l1.27,11.28c-3.12,1.54-8.15,2.54-12.28,2.54-11.17,0-18.69-5.77-18.69-17.74v-22.87h-8.58Z"/>
+        <path class="wm-fade wm-w1" d="M209.55,74.55V0h13.61V29.12c2.65-3.23,7.94-6.46,15.25-6.46,11.65,0,19.96,7.73,19.96,19.96v31.93h-13.61v-28.43c0-7.04-4.5-10.85-10.38-10.85s-11.22,3.81-11.22,10.85v28.43h-13.61Z"/>
+        <path class="wm-fade wm-w1" d="M263.97,49.08c.05-15.51,11.07-26.42,26.16-26.42,13.98,0,24.62,9.37,24.62,24.78,0,1.85-.16,3.76-.48,5.77h-36.74c1.01,5.98,7.1,10.17,13.55,10.17,5.03,0,9.37-2.33,12.65-7.15l9.64,7.2c-4.77,7.94-13.66,12.23-22.61,12.23-16.31,0-26.79-11.75-26.79-26.58Zm38.12-4.98c-.69-5.67-5.35-10.01-11.81-10.01s-11.81,4.24-12.55,10.01h24.35Z"/>
+        <path class="wm-fade wm-w1" d="M317.69,59.99c0-9.58,8.79-16.25,22.29-16.25,3.49,0,7.41,.58,10.69,1.75v-1.16c0-5.61-4.55-9.69-11.01-9.69-5.88,0-10.11,2.86-13.45,6.41l-7.78-7.78c3.44-4.45,10.96-10.59,21.65-10.59,14.88,0,24.14,7.89,24.14,20.6v31.29h-12.92v-5.67c-2.75,4.13-7.99,6.72-14.4,6.72-11.54,0-19.22-6.19-19.22-15.62Zm12.87-.74c0,3.81,3.28,6.25,8.47,6.25,6.51,0,11.65-4.34,11.65-10.75-2.49-1.11-5.72-1.96-9.74-1.96-6.19,0-10.38,2.59-10.38,6.46Z"/>
+        <path class="wm-fade wm-w1" d="M378.72,56.44c3.07,4.77,8.26,7.84,13.4,7.84,4.08,0,7.25-1.59,7.25-4.45,0-2.7-2.7-3.65-8.89-5.03-11.12-2.49-18.95-6.04-18.95-16.47,0-9.53,8.79-15.67,19.85-15.67,10.32,0,16.73,5.08,20.38,10.59l-8.68,7.15c-2.22-3.55-5.98-6.3-11.38-6.3-4.39,0-7.41,1.54-7.41,4.08,0,2.75,3.23,3.65,9.53,5.19,11.33,2.75,18.53,6.41,18.53,16.47s-9.21,15.78-20.07,15.78c-10.01,0-18.05-4.61-22.66-11.81l9.11-7.36Z"/>
+        <path class="wm-fade wm-w1" d="M412.49,35v-11.28h8.63V7.41h13.18V23.72h15.25v11.28h-14.93v20.91c0,5.29,2.96,7.62,7.52,7.62,2.54,0,5.77-.58,8.63-1.75l1.27,11.28c-3.12,1.54-8.15,2.54-12.28,2.54-11.17,0-18.69-5.77-18.69-17.74v-22.87h-8.58Z"/>
+        <path class="wm-fade wm-w1" d="M450.91,49.08c.05-15.51,11.07-26.42,26.16-26.42,13.98,0,24.62,9.37,24.62,24.78,0,1.85-.16,3.76-.48,5.77h-36.74c1.01,5.98,7.1,10.17,13.55,10.17,5.03,0,9.37-2.33,12.65-7.15l9.64,7.2c-4.77,7.94-13.66,12.23-22.61,12.23-16.31,0-26.79-11.75-26.79-26.58Zm38.12-4.98c-.69-5.67-5.35-10.01-11.81-10.01s-11.81,4.24-12.55,10.01h24.35Z"/>
+        <path class="wm-fade wm-w1" d="M508.02,23.72h13.13l.26,6.94c2.59-5.29,7.52-7.99,13.24-7.99,3.02,0,5.56,.79,6.62,1.16l-1.06,12.12c-1.38-.48-3.6-1.16-6.3-1.16-5.98,0-12.28,3.23-12.28,13.71v26.05h-13.61V23.72Z"/>
+        <path class="wm-fade wm-w1" d="M545.12,74.55V23.72h12.92l.26,5.88c2.65-3.55,8.1-6.94,15.67-6.94,11.75,0,20.07,7.73,20.07,19.96v31.93h-13.55v-28.43c0-7.04-4.55-10.85-10.54-10.85s-11.28,3.81-11.28,10.85v28.43h-13.55Z"/>
+        <path class="wm-k1" d="M620.91,38.6c0-21.02,15.88-37.01,36.9-37.01,12.44,0,23.93,5.93,31.5,16.89l-11.28,8.05c-5.61-8.47-12.92-11.7-20.22-11.7-13.08,0-22.24,9.85-22.24,23.77s9.53,23.77,22.61,23.77c11.97,0,18.69-7.04,20.33-14.67h-21.76v-12.34h36.21c.21,1.85,.26,3.97,.26,5.77,0,18.48-13.02,34.47-35.05,34.47s-37.27-15.99-37.27-37.01Z"/>
+        <path class="wm-fade wm-w2" d="M712.81,74.55h-13.55V0h13.55V74.55Z"/>
+        <path class="wm-fade wm-w2" d="M719.04,49.13c0-14.98,11.6-26.47,27.16-26.47s27.16,11.49,27.16,26.47-11.54,26.47-27.16,26.47-27.16-11.44-27.16-26.47Zm27.16,14.19c7.99,0,13.66-6.04,13.66-14.19s-5.67-14.14-13.66-14.14-13.66,6.04-13.66,14.14,5.72,14.19,13.66,14.19Z"/>
+        <path class="wm-fade wm-w2" d="M779.6,74.55V0h13.34V29.86c3.34-4.24,8.58-7.2,16.73-7.2,14.4,0,24.62,10.96,24.62,26.42s-10.22,26.53-24.62,26.53c-7.47,0-13.24-2.59-16.52-6.46l-.27,5.4h-13.29Zm27.32-11.12c8.05,0,13.77-6.35,13.77-14.4s-5.67-14.19-13.77-14.19-13.82,6.09-13.82,14.19,5.77,14.4,13.82,14.4Z"/>
+        <path class="wm-fade wm-w2" d="M837.24,59.99c0-9.58,8.79-16.25,22.29-16.25,3.49,0,7.41,.58,10.69,1.75v-1.16c0-5.61-4.55-9.69-11.01-9.69-5.88,0-10.11,2.86-13.45,6.41l-7.78-7.78c3.44-4.45,10.96-10.59,21.65-10.59,14.88,0,24.14,7.89,24.14,20.6v31.29h-12.92v-5.67c-2.75,4.13-7.99,6.72-14.4,6.72-11.54,0-19.22-6.19-19.22-15.62Zm12.87-.74c0,3.81,3.28,6.25,8.47,6.25,6.51,0,11.65-4.34,11.65-10.75-2.49-1.11-5.72-1.96-9.74-1.96-6.19,0-10.38,2.59-10.38,6.46Z"/>
+        <path class="wm-fade wm-w2" d="M906.64,74.55h-13.55V0h13.55V74.55Z"/>
+        <path class="wm-k2" d="M938.9,74.55V2.65h12.97l39.76,49.34V2.65h14.29V74.55h-13.18l-39.55-48.82v48.82h-14.29Z"/>
+        <path class="wm-fade wm-w3" d="M1013.49,49.08c.05-15.51,11.07-26.42,26.16-26.42,13.98,0,24.62,9.37,24.62,24.78,0,1.85-.16,3.76-.48,5.77h-36.74c1.01,5.98,7.1,10.17,13.55,10.17,5.03,0,9.37-2.33,12.65-7.15l9.64,7.2c-4.77,7.94-13.66,12.23-22.61,12.23-16.31,0-26.79-11.75-26.79-26.58Zm38.12-4.98c-.69-5.67-5.35-10.01-11.81-10.01s-11.81,4.24-12.55,10.01h24.35Z"/>
+        <path class="wm-fade wm-w3" d="M1064.62,23.72h14.03l10.01,37.01,10.91-36.21h12.07l10.85,36.21,10.06-37.01h14.03l-14.98,50.83h-16.89l-9.11-30.81-9.11,30.81h-16.89l-14.98-50.83Z"/>
+        <path class="wm-fade wm-w3" d="M1155.35,56.44c3.07,4.77,8.26,7.84,13.4,7.84,4.08,0,7.25-1.59,7.25-4.45,0-2.7-2.7-3.65-8.89-5.03-11.12-2.49-18.95-6.04-18.95-16.47,0-9.53,8.79-15.67,19.85-15.67,10.32,0,16.73,5.08,20.38,10.59l-8.68,7.15c-2.22-3.55-5.98-6.3-11.38-6.3-4.39,0-7.41,1.54-7.41,4.08,0,2.75,3.23,3.65,9.53,5.19,11.33,2.75,18.53,6.41,18.53,16.47s-9.21,15.78-20.07,15.78c-10.01,0-18.05-4.61-22.66-11.81l9.11-7.36Z"/>
+    </g>
+</svg></span>
+    </a>
+    <div class="app-bar__trailing-elements">
+      <div class="app-bar__text">Tuesday, July 21, 2026</div>
+      <button class="icon-button" aria-label="Search"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg></button>
+    </div>
+  </div>
+</div></header>
+<main id="site-content">
+
+<nav class="cat-bar" aria-label="University News topics">
+  <div class="wrapper wrapper--wide cat-bar__inner">
+    <h1>University News</h1>
+    <div class="cat-bar__links"><a href="#">Commencement</a><a href="#">Co-op</a><a href="#">Students</a><a href="#">Faculty</a><a href="#">Experiential Learning</a><a href="#">Events</a><a href="#">President Aoun</a></div>
+  </div>
+</nav>
+
+<section class="featured-bi">
+  <div class="wrapper wrapper--wide featured-bi__grid">
+    <article class="story featured-bi__lead"><a href="https://news.northeastern.edu/2023/12/14/hydrilla-plant-invasive-connecticut/">
+      <div class="media-frame"><img src="https://news.northeastern.edu/wp-content/uploads/2023/12/120723_MM_Agricultural_Experiment_Station_006.jpg?w=1100" alt=""></div>
+      <div class="lead-box"><h3 class="headline">An invasive plant is strangling Connecticut’s waters, so these students developed a robotic boat to help fix it</h3>
+        <div class="post-meta"><time>December 14, 2023</time></div></div>
+    </a></article>
+    <div class="featured-bi__rail">
+      <article class="story story--top"><a href="https://news.northeastern.edu/2023/12/12/tumor-cancer-treatment/">
+        <div class="media-frame"><img src="https://news.northeastern.edu/wp-content/uploads/2023/12/120823_AS_Stephen_Hatfield_044.jpg?w=1100" alt=""></div>
+        <h3 class="headline">Is this a faster, better treatment for blood and solid tumor cancers?</h3>
+        <div class="post-meta"><time>December 12, 2023</time></div>
+      </a></article>
+      <article class="story story--thumb-row"><a href="https://news.northeastern.edu/2024/06/04/louisa-may-alcott-pseudonym/"><div class="story__text"><h3 class="headline">The many mysterious pseudonyms of Louisa May Alcott discovered by Northeastern researcher</h3><div class="post-meta"><time>June 4, 2024</time></div></div><div class="media-frame"><img src="https://news.northeastern.edu/wp-content/uploads/2024/06/LMA.webp?w=1100" alt="" loading="lazy"></div></a></article><article class="story story--thumb-row"><a href="https://news.northeastern.edu/2026/06/25/smash-bros-club-student-club/"><div class="story__text"><h3 class="headline">Why students keep coming back to Northeastern’s Smash Bros. Club</h3><div class="post-meta"><time>June 25, 2026</time></div></div><div class="media-frame"><img src="https://news.northeastern.edu/wp-content/uploads/2026/06/Smash-Bros-Thumbnail-1400px.png" alt="" loading="lazy"></div></a></article>
+    </div>
+  </div>
+</section>
+<div class="wrapper wrapper--wide latest-shell">
+  <div class="river">
+    <div class="river-label">The Latest</div>
+    <article class="story is-mode-rich"><a href="https://news.northeastern.edu/2026/07/09/phones-at-conerts/"><div class="story--rich"><div class="story__text"><h3 class="headline" style="font-size:24px">What happens when you leave your phone behind at a concert?</h3><p class="blurb">What happens when you put your phone away and simply experience the music? We challenged Cam to find out.</p><div class="post-meta"><time>2 hours ago</time></div></div><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2026/07/option-1.png?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div></div></a></article><article class="story is-mode-rich"><a href="https://news.northeastern.edu/2026/07/16/world-cup-final-prediction/"><div class="story--rich"><div class="story__text"><h3 class="headline" style="font-size:24px">Can Network Science Predict the World Cup?</h3><p class="blurb">Northeastern researchers use passing networks to explore how teams connect, build attacks, and create chances, one pass at a time.</p><div class="post-meta"><time>5 days ago</time></div></div><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2026/07/WorldCupVideoThumbnail600x400.jpg" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div></div></a></article><article class="story is-mode-rich"><a href="https://news.northeastern.edu/2026/01/15/worlds-fastest-drones-video/"><div class="story--rich"><div class="story__text"><h3 class="headline" style="font-size:24px">Video: Building one of the world’s fastest drones</h3><p class="blurb">No drone has ever been able to keep up with IndyCar and Formula 1 racers — but this team of Northeastern students is trying to change that.</p><div class="post-meta"><time>Yesterday</time></div></div><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2026/01/drone-thumbnail.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div></div></a></article><article class="story is-mode-rich"><a href="https://news.northeastern.edu/2026/01/15/physical-therapy-exoskeleton-research/"><div class="story--rich"><div class="story__text"><h3 class="headline" style="font-size:24px">Where physical therapy meets technology</h3><p class="blurb">Northeastern University’s Neurosystems Laboratory is doing game-changing rehabilitation research through interdisciplinary collaboration.</p><div class="post-meta"><time>2 days ago</time></div></div><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2026/01/physical-therapy-robot.jpeg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div></div></a></article><article class="story is-mode-rich"><a href="https://news.northeastern.edu/2023/12/11/iphone-prices-increasing-china-supply/"><div class="story--rich"><div class="story__text"><h3 class="headline" style="font-size:24px">Is the price of your iPhone going to go up? How supply chain shifts are reshaping the global economy</h3><p class="blurb">Companies are relying less on China, says Nada Sanders, professor of supply chain management. That means increased prices of goods.</p><div class="post-meta"><time>December 11, 2023</time></div></div><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/12/iphone_1400.jpeg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div></div></a></article><article class="story is-mode-rich"><a href="https://news.northeastern.edu/2024/09/09/advances-in-ai/"><div class="story--rich"><div class="story__text"><h3 class="headline" style="font-size:24px">Northeastern is a ‘living laboratory’ for rapid and reliable advances in artificial intelligence</h3><p class="blurb">Northeastern’s AI approach is truly “experiential,” connecting students, researchers, and partners across a global university system.</p><div class="post-meta"><time>September 9, 2024</time></div></div><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2024/09/AI-1400x932-1.png?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div></div></a></article>
+  </div>
+  
+    <aside class="newsletter-rail">
+      <form class="newsletter-panel" action="#" method="post">
+        <h2>NGN in your inbox</h2>
+        <p class="dek">The day&rsquo;s top stories from Northeastern, every weekday morning &mdash; tuned to what you care about.</p>
+        <fieldset>
+          <legend>I&rsquo;m interested in</legend>
+          <div class="interests">
+            <label><input type="checkbox" name="interest" value="University News" checked>University News</label><label><input type="checkbox" name="interest" value="Science & Tech">Science & Tech</label><label><input type="checkbox" name="interest" value="Health">Health</label><label><input type="checkbox" name="interest" value="Sports">Sports</label>
+          </div>
+        </fieldset>
+        <div class="email-row">
+          <input type="email" placeholder="Email address" aria-label="Email address" required>
+          <button type="submit">Sign up</button>
+        </div>
+      </form>
+    </aside>
+</div>
+<div class="wrapper wrapper--wide">
+  
+  <section class="topic-group">
+    <div class="section-label">Co-op
+      <a class="more-btn" href="https://news.northeastern.edu/tag/co-op/">More Co-op stories &rarr;</a></div>
+    <div class="band-grid">
+      <article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2024/04/10/clara-wu-high-school-letter/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2024/04/Clara-Wu_1400.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">Video: 2023 graduate reflects on her Northeastern experience: neuroscience, co-ops, sports and volunteerism</h3><div class="post-meta"><time>April 10, 2024</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/11/20/pediatric-palliative-care/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/11/Clara-Wu_1400.jpeg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">Pediatric palliative care all about quality of life and this Northeastern grad is making children’s days ‘just a little bit better’</h3><div class="post-meta"><time>November 20, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/11/09/paige-cooper-nfl-agent-athletes-first/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/11/Justin_Fields_1400.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">Northeastern grad turns dream of working in sports into reality with job at top NFL management agency</h3><div class="post-meta"><time>November 9, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/11/06/harpswell-foundation-co-op-cambodian-women/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/11/Cecile-Doehrty_1400.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">Northeastern co-op is a teacher, mentor, big sister and friend to 25 young women in a Cambodian dormitory</h3><div class="post-meta"><time>November 6, 2023</time></div></div></a></article>
+    </div>
+  </section>
+  <section class="topic-group">
+    <div class="section-label">Experiential Learning
+      <a class="more-btn" href="https://news.northeastern.edu/tag/experiential-learning/">More Experiential Learning stories &rarr;</a></div>
+    <div class="band-grid">
+      <article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/10/18/experiential-entrepreneurship-program-oakland/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/10/Oakland1400.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">President Aoun joins students on the Oakland campus to kick off a new Experiential Entrepreneurship program</h3><div class="post-meta"><time>October 18, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/09/01/oakland-campus-move-in/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/09/083123_RW_Mills_MoveIn_25-1-hug.webp?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">Global mobility, experiential learning excite new students, parents on Northeastern’s Oakland campus</h3><div class="post-meta"><time>September 1, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/04/20/academic-honors-convocation-northeastern/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/04/042023_AS_Academic_Honors1400.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">‘You are the role models.’ Northeastern celebrates achievement at 13th Annual Academic Honors Convocation</h3><div class="post-meta"><time>April 20, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/04/13/ecuador-co-op-opportunities/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/04/co-op_1400.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">Two Northeastern students on co-op. One faraway country. Here’s how they’re making a difference in Ecuador</h3><div class="post-meta"><time>April 13, 2023</time></div></div></a></article>
+    </div>
+  </section>
+  <section class="topic-group">
+    <div class="section-label">Events
+      <a class="more-btn" href="https://news.northeastern.edu/tag/events/">More Events stories &rarr;</a></div>
+    <div class="band-grid">
+      <article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/12/06/annual-joy-light-showcase/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/12/120623_AS_Joy_Light_052.jpeg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">Hundreds gather on Boston campus to celebrate the holiday season at annual Joy and Light interfaith event</h3><div class="post-meta"><time>December 6, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/11/13/walmart-hackathon-artificial-intelligence/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/10/Walmart-Hack-a-thon_006.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">Using AI, Northeastern students in Toronto partner with Walmart Canada to implement solutions</h3><div class="post-meta"><time>November 13, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/10/31/scholarship-program-roxbury-community-college/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/10/103123_MM_A2M_Ceremoney_032.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">Degree partnership between Northeastern and Roxbury CC is the ‘type of bold, intentional investment’ that’s needed</h3><div class="post-meta"><time>October 31, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/10/24/israel-hamas-oil-prices-1970s-crisis/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/10/oil1400.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">Revisiting the 1970s? Will the Israel-Hamas war affect the price of oil and gas in the US?</h3><div class="post-meta"><time>October 24, 2023</time></div></div></a></article>
+    </div>
+  </section>
+  <section class="topic-group">
+    <div class="section-label">President Aoun
+      <a class="more-btn" href="https://news.northeastern.edu/tag/president-joseph-e-aoun/">More President Aoun stories &rarr;</a></div>
+    <div class="band-grid">
+      <article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/11/23/northeastern-thanksgiving/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/11/London_Thanksgiving_011.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">President Aoun and Northeastern students celebrate Thanksgiving on London campus</h3><div class="post-meta"><time>November 23, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/11/21/seattle-campus-10-year-anniversary/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/11/Seattle1400.jpeg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">In its 10th year, Northeastern’s Seattle campus has record enrollment, hundreds of industry partnerships, impact on region’s economy</h3><div class="post-meta"><time>November 21, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/11/16/thanksgiving-boston-oakland-london/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/11/Kew1400.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">Can’t go home for Thanksgiving? Dinner is served, and a list of things to do over the holiday weekend in Boston, Oakland and London</h3><div class="post-meta"><time>November 16, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/11/10/veterans-ceremony-day-2023/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/11/111023_AS_Veterans_Day_040.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:17px">Northeastern honors veterans, pledges continued commitment to those who serve</h3><div class="post-meta"><time>November 10, 2023</time></div></div></a></article>
+    </div>
+  </section>
+  
+  <section class="topic-group">
+    <div class="section-label">All University News
+      <a class="more-btn" href="#">Browse the archive &rarr;</a></div>
+    <div class="band-grid">
+      <article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2026/07/02/vr-art-club-students/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2026/07/NUVR-Newsletter-1400px-600x400-1.png" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:21px">What Happens When a VR Club and Art Club Join Forces?</h3><div class="post-meta"><time>July 2, 2026</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2026/01/29/rabbi-sara-paasche-orlow-operation-valkyrie/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2026/01/maxresdefault.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:21px">Video: Northeastern Rabbi’s Family Ties to Operation Valkyrie</h3><div class="post-meta"><time>January 29, 2026</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2026/01/15/miranda-shinn-lobstering-industry/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2026/01/Lift-All-Boats-B.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:21px">Video: A Northeastern student is solving lobstering’s biggest problem</h3><div class="post-meta"><time>January 15, 2026</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2025/05/01/northeastern-baseball-beanpot-harvard/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2025/05/1400x933.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:21px">Baseball Beanpot champions: Huskies successfully defend title at Fenway Park</h3><div class="post-meta"><time>May 1, 2025</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2024/09/25/tommaso-melodia-wireless-communications-research/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2024/09/Tomasso1400.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:21px">Video: How Tommaso Melodia has helped transform Northeastern into one of the premier centers for wireless communications research</h3><div class="post-meta"><time>September 25, 2024</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2024/09/04/cicely-carew-public-art/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2024/09/THUMBNAIL-CICELY-1400x932-1.png?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:21px">Cicely Carew says public art can ‘inspire wonder and allow for enchantment’</h3><div class="post-meta"><time>September 4, 2024</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2024/07/12/king-pompey-colonial-era-home/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2024/06/060424_King_Pompey_047.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:21px">Video: Northeastern historian helps unearth colonial-era home of ‘King Pompey’</h3><div class="post-meta"><time>July 12, 2024</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2024/02/14/mens-beanpot-2024-video/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2024/02/021224_MM_M_beanpot_083.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:21px">Video: Northeastern defeats Boston University in overtime to win fifth men’s Beanpot title in six years</h3><div class="post-meta"><time>February 14, 2024</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/12/18/math-physical-fitness-mathletes-study/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/11/110823_MM_Lauren_Raine_011.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:21px">Does exercise improve kids’ math skills? Yes, but it won’t help with reading or spelling, new research finds</h3><div class="post-meta"><time>December 18, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/12/12/mindfulness-meditation-holiday-stress/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/12/meditating_1400.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:21px">Can mindfulness meditation help you stress less during the holidays?</h3><div class="post-meta"><time>December 12, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/12/12/cantaloupe-safety-recall-salmonella/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/12/cantaloupe1400.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:21px">Why cantaloupe is a fruit you should avoid — recall or not — food safety expert says</h3><div class="post-meta"><time>December 12, 2023</time></div></div></a></article><article class="story is-mode-stacked"><a href="https://news.northeastern.edu/2023/12/05/dolly-parton-cher-older-women-entertainment/"><div class="media-frame" style=""><img src="https://news.northeastern.edu/wp-content/uploads/2023/12/Cher1400.jpg?w=1100" alt="" loading="lazy" style="aspect-ratio:3 / 2"></div><div class="story__text"><h3 class="headline" style="font-size:21px">Dolly Parton, Barbra Streisand and Cher: Why older women are in the spotlight like never before</h3><div class="post-meta"><time>December 5, 2023</time></div></div></a></article>
+    </div>
+  </section>
+  <div class="load-more"><button>Load more stories</button></div>
+</div>
+
+<div class="proto-font-tool">
+  <label>H1 font <select id="h1-font"><option value="kepler-std-condensed-subhead" selected>Kepler Std Condensed Subhead</option><option value="kepler-std-condensed-display">Kepler Std Condensed Display</option><option value="kepler-std-display">Kepler Std Display</option><option value="kepler-std">Kepler Std</option><option value="lato">Lato (sans)</option></select></label>
+  <label>Weight <select id="h1-weight"><option value="300">300</option><option value="400">400</option><option value="500" selected>500</option><option value="600">600</option><option value="700">700</option></select></label>
+</div>
+<script>
+(() => {
+  const font = document.getElementById('h1-font');
+  const weight = document.getElementById('h1-weight');
+  const apply = () => {
+    document.documentElement.style.setProperty('--h1-font', font.value + ", kepler-std, georgia, serif");
+    document.documentElement.style.setProperty('--h1-weight', weight.value);
+  };
+  font.addEventListener('change', apply);
+  weight.addEventListener('change', apply);
+  apply();
+})();
+</script>
+<script>
+/* Logo condense: wordmark collapses to the NGN monogram once scrolled */
+(() => {
+  const bar = document.querySelector('.ngn-bar');
+  addEventListener('scroll',
+    () => bar.classList.toggle('is-condensed', scrollY > 120),
+    { passive: true });
+})();
+</script></main>
+<footer class="site-footer">
+	<div class="wrapper">
+		<section class="site-summary">
+    
+<div class="nameplate">
+	<h1 class="nameplate__headline screen-reader-text">
+		<a href="https://news.northeastern.edu" rel="home">Northeastern Global News</a>
+	</h1>
+	<a href="https://news.northeastern.edu" class="nameplate__media" rel="home" aria-label="Navigate to Northeastern Global News">
+		<svg class="ngn-wordmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1284 75.66">
+    <defs>
+        <style>
+            .ngn-wordmark__shapes {fill: var(--wp--custom--color--emphasize, #000) }
+            .ngn-wordmark__shapes-arrow {fill: var(--wp--custom--color--accent, #cf2b28) }
+        </style>
+    </defs>
+    <polygon class="ngn-wordmark__shapes ngn-wordmark__shapes-arrow"
+             points="1212.05 2.59 1212.05 16.97 1259.1 16.97 1217.15 58.92 1227.32 69.09 1269.62 26.79 1269.62 74.55 1284 74.55 1284 2.59 1212.05 2.59"/>
+    <g class="ngn-wordmark__shapes">
+        <path d="M0,74.55V2.65H12.97L52.73,51.99V2.65h14.29V74.55h-13.18L14.29,25.73v48.82H0Z"/>
+        <path d="M74.54,49.13c0-14.98,11.6-26.47,27.16-26.47s27.16,11.49,27.16,26.47-11.54,26.47-27.16,26.47-27.16-11.44-27.16-26.47Zm27.16,14.19c7.99,0,13.66-6.04,13.66-14.19s-5.67-14.14-13.66-14.14-13.66,6.04-13.66,14.14,5.72,14.19,13.66,14.19Z"/>
+        <path d="M135.09,23.72h13.13l.26,6.94c2.59-5.29,7.52-7.99,13.24-7.99,3.02,0,5.56,.79,6.62,1.16l-1.06,12.12c-1.38-.48-3.6-1.16-6.3-1.16-5.98,0-12.28,3.23-12.28,13.71v26.05h-13.61V23.72Z"/>
+        <path d="M166.21,35v-11.28h8.63V7.41h13.18V23.72h15.25v11.28h-14.93v20.91c0,5.29,2.96,7.62,7.52,7.62,2.54,0,5.77-.58,8.63-1.75l1.27,11.28c-3.12,1.54-8.15,2.54-12.28,2.54-11.17,0-18.69-5.77-18.69-17.74v-22.87h-8.58Z"/>
+        <path d="M209.55,74.55V0h13.61V29.12c2.65-3.23,7.94-6.46,15.25-6.46,11.65,0,19.96,7.73,19.96,19.96v31.93h-13.61v-28.43c0-7.04-4.5-10.85-10.38-10.85s-11.22,3.81-11.22,10.85v28.43h-13.61Z"/>
+        <path d="M263.97,49.08c.05-15.51,11.07-26.42,26.16-26.42,13.98,0,24.62,9.37,24.62,24.78,0,1.85-.16,3.76-.48,5.77h-36.74c1.01,5.98,7.1,10.17,13.55,10.17,5.03,0,9.37-2.33,12.65-7.15l9.64,7.2c-4.77,7.94-13.66,12.23-22.61,12.23-16.31,0-26.79-11.75-26.79-26.58Zm38.12-4.98c-.69-5.67-5.35-10.01-11.81-10.01s-11.81,4.24-12.55,10.01h24.35Z"/>
+        <path d="M317.69,59.99c0-9.58,8.79-16.25,22.29-16.25,3.49,0,7.41,.58,10.69,1.75v-1.16c0-5.61-4.55-9.69-11.01-9.69-5.88,0-10.11,2.86-13.45,6.41l-7.78-7.78c3.44-4.45,10.96-10.59,21.65-10.59,14.88,0,24.14,7.89,24.14,20.6v31.29h-12.92v-5.67c-2.75,4.13-7.99,6.72-14.4,6.72-11.54,0-19.22-6.19-19.22-15.62Zm12.87-.74c0,3.81,3.28,6.25,8.47,6.25,6.51,0,11.65-4.34,11.65-10.75-2.49-1.11-5.72-1.96-9.74-1.96-6.19,0-10.38,2.59-10.38,6.46Z"/>
+        <path d="M378.72,56.44c3.07,4.77,8.26,7.84,13.4,7.84,4.08,0,7.25-1.59,7.25-4.45,0-2.7-2.7-3.65-8.89-5.03-11.12-2.49-18.95-6.04-18.95-16.47,0-9.53,8.79-15.67,19.85-15.67,10.32,0,16.73,5.08,20.38,10.59l-8.68,7.15c-2.22-3.55-5.98-6.3-11.38-6.3-4.39,0-7.41,1.54-7.41,4.08,0,2.75,3.23,3.65,9.53,5.19,11.33,2.75,18.53,6.41,18.53,16.47s-9.21,15.78-20.07,15.78c-10.01,0-18.05-4.61-22.66-11.81l9.11-7.36Z"/>
+        <path d="M412.49,35v-11.28h8.63V7.41h13.18V23.72h15.25v11.28h-14.93v20.91c0,5.29,2.96,7.62,7.52,7.62,2.54,0,5.77-.58,8.63-1.75l1.27,11.28c-3.12,1.54-8.15,2.54-12.28,2.54-11.17,0-18.69-5.77-18.69-17.74v-22.87h-8.58Z"/>
+        <path d="M450.91,49.08c.05-15.51,11.07-26.42,26.16-26.42,13.98,0,24.62,9.37,24.62,24.78,0,1.85-.16,3.76-.48,5.77h-36.74c1.01,5.98,7.1,10.17,13.55,10.17,5.03,0,9.37-2.33,12.65-7.15l9.64,7.2c-4.77,7.94-13.66,12.23-22.61,12.23-16.31,0-26.79-11.75-26.79-26.58Zm38.12-4.98c-.69-5.67-5.35-10.01-11.81-10.01s-11.81,4.24-12.55,10.01h24.35Z"/>
+        <path d="M508.02,23.72h13.13l.26,6.94c2.59-5.29,7.52-7.99,13.24-7.99,3.02,0,5.56,.79,6.62,1.16l-1.06,12.12c-1.38-.48-3.6-1.16-6.3-1.16-5.98,0-12.28,3.23-12.28,13.71v26.05h-13.61V23.72Z"/>
+        <path d="M545.12,74.55V23.72h12.92l.26,5.88c2.65-3.55,8.1-6.94,15.67-6.94,11.75,0,20.07,7.73,20.07,19.96v31.93h-13.55v-28.43c0-7.04-4.55-10.85-10.54-10.85s-11.28,3.81-11.28,10.85v28.43h-13.55Z"/>
+        <path d="M620.91,38.6c0-21.02,15.88-37.01,36.9-37.01,12.44,0,23.93,5.93,31.5,16.89l-11.28,8.05c-5.61-8.47-12.92-11.7-20.22-11.7-13.08,0-22.24,9.85-22.24,23.77s9.53,23.77,22.61,23.77c11.97,0,18.69-7.04,20.33-14.67h-21.76v-12.34h36.21c.21,1.85,.26,3.97,.26,5.77,0,18.48-13.02,34.47-35.05,34.47s-37.27-15.99-37.27-37.01Z"/>
+        <path d="M712.81,74.55h-13.55V0h13.55V74.55Z"/>
+        <path d="M719.04,49.13c0-14.98,11.6-26.47,27.16-26.47s27.16,11.49,27.16,26.47-11.54,26.47-27.16,26.47-27.16-11.44-27.16-26.47Zm27.16,14.19c7.99,0,13.66-6.04,13.66-14.19s-5.67-14.14-13.66-14.14-13.66,6.04-13.66,14.14,5.72,14.19,13.66,14.19Z"/>
+        <path d="M779.6,74.55V0h13.34V29.86c3.34-4.24,8.58-7.2,16.73-7.2,14.4,0,24.62,10.96,24.62,26.42s-10.22,26.53-24.62,26.53c-7.47,0-13.24-2.59-16.52-6.46l-.27,5.4h-13.29Zm27.32-11.12c8.05,0,13.77-6.35,13.77-14.4s-5.67-14.19-13.77-14.19-13.82,6.09-13.82,14.19,5.77,14.4,13.82,14.4Z"/>
+        <path d="M837.24,59.99c0-9.58,8.79-16.25,22.29-16.25,3.49,0,7.41,.58,10.69,1.75v-1.16c0-5.61-4.55-9.69-11.01-9.69-5.88,0-10.11,2.86-13.45,6.41l-7.78-7.78c3.44-4.45,10.96-10.59,21.65-10.59,14.88,0,24.14,7.89,24.14,20.6v31.29h-12.92v-5.67c-2.75,4.13-7.99,6.72-14.4,6.72-11.54,0-19.22-6.19-19.22-15.62Zm12.87-.74c0,3.81,3.28,6.25,8.47,6.25,6.51,0,11.65-4.34,11.65-10.75-2.49-1.11-5.72-1.96-9.74-1.96-6.19,0-10.38,2.59-10.38,6.46Z"/>
+        <path d="M906.64,74.55h-13.55V0h13.55V74.55Z"/>
+        <path d="M938.9,74.55V2.65h12.97l39.76,49.34V2.65h14.29V74.55h-13.18l-39.55-48.82v48.82h-14.29Z"/>
+        <path d="M1013.49,49.08c.05-15.51,11.07-26.42,26.16-26.42,13.98,0,24.62,9.37,24.62,24.78,0,1.85-.16,3.76-.48,5.77h-36.74c1.01,5.98,7.1,10.17,13.55,10.17,5.03,0,9.37-2.33,12.65-7.15l9.64,7.2c-4.77,7.94-13.66,12.23-22.61,12.23-16.31,0-26.79-11.75-26.79-26.58Zm38.12-4.98c-.69-5.67-5.35-10.01-11.81-10.01s-11.81,4.24-12.55,10.01h24.35Z"/>
+        <path d="M1064.62,23.72h14.03l10.01,37.01,10.91-36.21h12.07l10.85,36.21,10.06-37.01h14.03l-14.98,50.83h-16.89l-9.11-30.81-9.11,30.81h-16.89l-14.98-50.83Z"/>
+        <path d="M1155.35,56.44c3.07,4.77,8.26,7.84,13.4,7.84,4.08,0,7.25-1.59,7.25-4.45,0-2.7-2.7-3.65-8.89-5.03-11.12-2.49-18.95-6.04-18.95-16.47,0-9.53,8.79-15.67,19.85-15.67,10.32,0,16.73,5.08,20.38,10.59l-8.68,7.15c-2.22-3.55-5.98-6.3-11.38-6.3-4.39,0-7.41,1.54-7.41,4.08,0,2.75,3.23,3.65,9.53,5.19,11.33,2.75,18.53,6.41,18.53,16.47s-9.21,15.78-20.07,15.78c-10.01,0-18.05-4.61-22.66-11.81l9.11-7.36Z"/>
+    </g>
+</svg>
+	</a>
+</div>
+	<div class="site-description">
+	</div>
+</section>
+<section class="site-footer__menus">
+	<ul id="menu-news-topics-1" class="site-footer-menu"><li class="menu-item menu-item-type-taxonomy menu-item-object-category current-menu-item menu-item-164911"><a href="https://news.northeastern.edu/category/university-news/" aria-current="page">University News</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-164914"><a href="https://news.northeastern.edu/category/world-news/">World &amp; National News</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-164913"><a href="https://news.northeastern.edu/category/science-technology/">Science &amp; Technology</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-294591"><a href="https://news.northeastern.edu/tag/entrepreneurship">Entrepreneurship</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-164916"><a href="https://news.northeastern.edu/category/arts-entertainment/">Arts &amp; Entertainment</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-164918"><a href="https://news.northeastern.edu/category/business/">Business</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-294592"><a href="https://news.northeastern.edu/tag/artificial-intelligence">Artificial Intelligence</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-164917"><a href="https://news.northeastern.edu/category/health/">Health</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-164912"><a href="https://news.northeastern.edu/category/society-culture/">Society &amp; Culture</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-164915"><a href="https://news.northeastern.edu/category/sports/">Sports</a></li>
+</ul>	<ul id="menu-general-information-microsites" class="site-footer-menu"><li id="menu-item-164905" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-164905"><a href="https://news.northeastern.edu/contact/">Contact Us</a></li>
+<li id="menu-item-164906" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-164906"><a href="/faculty-experts">Faculty Experts</a></li>
+<li id="menu-item-164907" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-164907"><a href="/in-the-media">In the Press</a></li>
+<li id="menu-item-164908" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-164908"><a href="/media-inquiries">Media Inquiries</a></li>
+<li id="menu-item-164909" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-164909"><a href="https://mailchi.mp/northeastern/sign-up-form">Newsletter</a></li>
+<li id="menu-item-182188" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-has-children menu-item-182188"><a href="https://news.northeastern.edu">News Hubs</a>
+<ul class="sub-menu">
+	<li id="menu-item-164910" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-164910"><a href="/parents">Parents &#038; Families</a></li>
+	<li id="menu-item-167513" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-167513"><a href="https://news.northeastern.edu/research/">NGN Research</a></li>
+	<li id="menu-item-257461" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-257461"><a href="https://news.northeastern.edu/faculty-staff">Faculty &#038; Staff</a></li>
+</ul>
+</li>
+</ul></section>
+		<section class="site-footer__tools">
+			<div class="wp-block-search">
+	<form role="search" method="get" action="/"
+	      class="wp-block-search__button-inside wp-block-search__icon-button wp-block-search">
+		<label for="search-36383438__input"
+		       class="wp-block-search__label">
+			Search		</label>
+		<div class="wp-block-search__inside-wrapper is-inline-input">
+			<input type="search" class="search__input"
+			       id="search-36383438__input"
+			       name="s" placeholder=""			       value="">
+												<button type="submit"
+			        class="wp-block-search__button has-icon is-icon-only wp-element-button"
+			        aria-label="Search">
+				<i class="icon heroicon heroicon-magnifying-glass"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+</svg>
+</i>			</button>
+		</div>
+			</form>
+</div>
+
+<div id="mc_embed_signup">
+	<form
+	action="https://northeastern.us9.list-manage.com/subscribe/post?u=00133729f8250214e49b2a93c&amp;id=73fbbd3f61&amp;f_id=009c57e1f0"
+	method="post"
+	id="subscribe-form-mailchimp-2"
+	name="mc-embedded-subscribe-form"
+	class="newsletter-subscribe validate"
+	novalidate
+	target="_blank">
+		<label class="newsletter-subscribe__label title" for="subscribe-form-mailchimp-2-email-input">Stay Connected</label>
+		<div class="newsletter-subscribe__inside-wrapper is-inline-input">
+			<input type="email"
+				   name="EMAIL"
+				   class="required email"
+				   id="mce-EMAIL"
+				   required=""
+				   value="">
+			<input name="location"
+				   type="hidden"
+				   value="email-subscribe submission" />
+			<input class="screen-reader-text"
+				   aria-hidden="true"
+				   name="b_00133729f8250214e49b2a93c_73fbbd3f61"
+				   tabindex="-1"
+				   type="text"
+				   value="" />
+			<button type="submit"
+					class="newsletter-subscribe__button has-icon has-accent-ui wp-element-button button"
+					aria-label="Subscribe to Newsletter"
+					name="subscribe"
+					id="mc-embedded-subscribe">
+					Subscribe <i class="icon heroicon heroicon-envelope"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+</svg>
+</i>			</button>
+		</div>
+		<div id="mce-responses" class="clear">
+			<div class="response" id="mce-error-response" style="display: none;"></div>
+			<div class="response" id="mce-success-response" style="display: none;"></div>
+		</div>
+		<div style="position: absolute; left: -5000px;" aria-hidden="true">
+			<input type="text" name="b_00133729f8250214e49b2a93c_12c1eaf788" tabindex="-1" value="">
+		</div>
+	</form>
+</div>
+		</section>
+		<section class="site-footer__colophon">
+			<div class="nu-link">
+	<a href="https://northeastern.edu">
+		<svg class="nu-logo nu-logo-monogram-motto" width="222" height="172" viewBox="0 0 222 172" xmlns="http://www.w3.org/2000/svg">
+	<title id="title">Northeastern Monogram with Motto</title>
+	<desc id="desc">Large N with "Lux, Veritas, Virtus" overlayed</desc>
+	<g class="nu-logo-monogram__shapes-motto">
+		<path d="M31.7701 83C32.9801 82.94 33.5801 82.9 34.7801 82.84C35.2001 82.82 35.4301 83.03 35.4401 83.47C35.4401 83.76 35.4501 83.91 35.4601 84.2C35.4601 84.64 35.2601 84.87 34.8301 84.9C32.9801 85 32.0601 85.05 30.2101 85.15C29.7801 85.17 29.5601 84.96 29.5601 84.52C29.5601 81.35 29.5601 79.76 29.5601 76.58C29.5601 76.14 29.7701 75.91 30.1901 75.88C30.5501 75.86 30.7301 75.85 31.0901 75.83C31.5001 75.81 31.7201 76.02 31.7201 76.46C31.7401 79.08 31.7501 80.39 31.7701 83.01V83Z"/>
+		<path d="M41.4099 84.83C41.0699 84.83 40.8999 84.83 40.5499 84.83C40.0599 84.83 39.8499 84.69 39.6699 84.21C38.4599 80.98 37.8699 79.37 36.7299 76.14C36.6099 75.81 36.8099 75.52 37.1399 75.52C37.5599 75.52 37.7599 75.52 38.1799 75.52C38.6499 75.52 38.8499 75.66 39.0099 76.14C39.7999 78.43 40.2099 79.58 41.0399 81.87C41.8499 79.57 42.2499 78.41 43.0299 76.11C43.1899 75.63 43.3899 75.49 43.8599 75.48C44.2199 75.48 44.4099 75.48 44.7699 75.48C45.0999 75.48 45.2999 75.77 45.1799 76.1C44.0499 79.35 43.4699 80.97 42.2699 84.21C42.0899 84.69 41.8899 84.83 41.3899 84.84L41.4099 84.83Z"/>
+		<path d="M48.75 84.85C48.27 84.83 48.03 84.82 47.56 84.79C47.27 84.78 47.11 84.46 47.28 84.22C48.39 82.56 48.94 81.73 50.01 80.08C49.07 78.48 48.6 77.68 47.69 76.08C47.54 75.82 47.71 75.53 47.99 75.54L49.24 75.6C49.75 75.63 49.93 75.74 50.18 76.22C50.71 77.17 50.97 77.64 51.51 78.59C52.05 77.7 52.32 77.25 52.85 76.35C53.11 75.9 53.29 75.8 53.8 75.83C54.27 75.85 54.5 75.86 54.97 75.89C55.25 75.9 55.41 76.22 55.26 76.46C54.32 77.96 53.84 78.71 52.87 80.22C53.93 81.98 54.47 82.86 55.56 84.62C55.72 84.88 55.56 85.17 55.27 85.16L53.97 85.1C53.44 85.07 53.26 84.96 52.98 84.48C52.34 83.36 52.02 82.81 51.38 81.69C50.73 82.74 50.4 83.27 49.74 84.32C49.46 84.77 49.28 84.87 48.75 84.84V84.85Z"/>
+		<path d="M14.61 103.34C14.25 103.39 14.07 103.41 13.71 103.46C13.19 103.53 12.97 103.41 12.76 102.97C11.36 99.93 10.69 98.41 9.38001 95.38C9.24001 95.07 9.45001 94.75 9.79001 94.71C10.23 94.65 10.45 94.62 10.89 94.56C11.39 94.49 11.6 94.61 11.79 95.06C12.7 97.22 13.16 98.3 14.12 100.47C14.89 98.08 15.27 96.88 16.02 94.49C16.17 93.99 16.38 93.82 16.87 93.75C17.25 93.7 17.44 93.67 17.83 93.62C18.17 93.57 18.39 93.83 18.28 94.18C17.19 97.56 16.64 99.25 15.5 102.62C15.33 103.12 15.12 103.29 14.61 103.36V103.34Z"/>
+		<path d="M22.4599 102.38C22.0099 102.42 21.78 102.21 21.78 101.77C21.74 98.6 21.72 97.02 21.7 93.85C21.7 93.41 21.92 93.17 22.35 93.14C24.44 92.96 25.48 92.88 27.57 92.7C28 92.66 28.23 92.87 28.24 93.3C28.24 93.56 28.25 93.7 28.26 93.96C28.27 94.4 28.0599 94.64 27.6299 94.67C26.1799 94.79 25.45 94.85 23.99 94.97C24 95.61 24.01 95.93 24.02 96.57C25.03 96.49 25.53 96.44 26.54 96.36C26.98 96.32 27.2099 96.53 27.2199 96.97C27.2199 97.2 27.23 97.32 27.24 97.55C27.25 97.99 27.03 98.23 26.59 98.26C25.57 98.34 25.0699 98.39 24.0499 98.47C24.0599 99.18 24.07 99.54 24.08 100.25C25.56 100.13 26.31 100.07 27.79 99.95C28.23 99.91 28.4699 100.12 28.4799 100.56L28.5 101.22C28.52 101.66 28.29 101.9 27.85 101.93C25.7 102.11 24.6199 102.19 22.4599 102.37V102.38Z"/>
+		<path d="M33.68 101.63C33.29 101.64 33.1 101.65 32.71 101.66C32.27 101.67 32.04 101.46 32.04 101.02C32.04 97.84 32.06 96.25 32.07 93.07C32.07 92.63 32.29 92.4 32.72 92.39C33.93 92.35 34.53 92.33 35.74 92.29C37.7 92.23 38.97 93.35 39.01 95.07C39.03 96.17 38.48 97.05 37.51 97.53C38.24 98.86 38.61 99.53 39.36 100.86C39.51 101.13 39.33 101.44 39.01 101.45L37.83 101.49C37.29 101.51 37.1 101.39 36.85 100.92C36.25 99.78 35.95 99.21 35.36 98.07C34.95 98.08 34.74 98.09 34.32 98.1C34.32 99.23 34.32 99.8 34.33 100.93C34.33 101.37 34.1 101.6 33.66 101.61L33.68 101.63ZM35.71 94.16C35.15 94.18 34.88 94.19 34.32 94.2C34.32 95.04 34.32 95.46 34.32 96.29L35.72 96.25C36.3 96.23 36.72 95.79 36.71 95.18C36.71 94.54 36.28 94.13 35.7 94.15L35.71 94.16Z"/>
+		<path d="M43.33 101.47C42.89 101.47 42.66 101.24 42.66 100.8C42.67 97.62 42.68 96.03 42.69 92.85C42.69 92.41 42.91 92.19 43.34 92.19C43.72 92.19 43.91 92.19 44.29 92.19C44.72 92.19 44.94 92.42 44.94 92.86C44.95 96.04 44.96 97.63 44.97 100.81C44.97 101.25 44.74 101.47 44.3 101.47C43.91 101.47 43.71 101.47 43.32 101.47H43.33Z"/>
+		<path d="M51.37 101.66C50.93 101.64 50.7 101.4 50.71 100.97C50.75 98.35 50.77 97.04 50.8 94.42C49.97 94.38 49.56 94.36 48.73 94.32C48.3 94.3 48.08 94.06 48.09 93.63C48.09 93.34 48.1 93.19 48.11 92.9C48.11 92.46 48.35 92.25 48.77 92.27C51.31 92.39 52.58 92.45 55.13 92.57C55.56 92.59 55.78 92.82 55.78 93.26V93.99C55.78 94.43 55.56 94.64 55.13 94.62C54.3 94.58 53.89 94.56 53.06 94.52C53.05 97.14 53.04 98.45 53.02 101.07C53.02 101.51 52.79 101.72 52.34 101.7C51.95 101.68 51.75 101.67 51.36 101.66H51.37Z"/>
+		<path d="M58.3201 102.04C57.9301 102 57.7301 101.99 57.3401 101.95C56.9901 101.92 56.7901 101.61 56.9301 101.29C58.3301 98.18 59.0201 96.62 60.3301 93.51C60.5201 93.05 60.7401 92.93 61.2301 92.97C61.6001 93 61.7901 93.02 62.1601 93.06C62.6601 93.11 62.8601 93.27 63.0401 93.76C64.2301 97.1 64.8401 98.77 66.0901 102.11C66.2201 102.45 66.0001 102.72 65.6501 102.69C65.2001 102.65 64.9801 102.63 64.5301 102.59C64.0201 102.54 63.8001 102.38 63.6301 101.89C63.4601 101.41 63.3801 101.17 63.2201 100.69C61.8101 100.56 61.1101 100.5 59.7001 100.37C59.5101 100.82 59.4201 101.04 59.2301 101.49C59.0401 101.95 58.8201 102.07 58.3101 102.03L58.3201 102.04ZM62.6001 98.84C62.1801 97.61 61.9801 96.99 61.5701 95.76C61.1101 96.91 60.8801 97.49 60.4101 98.64C61.2801 98.72 61.7201 98.76 62.6001 98.84Z"/>
+		<path d="M19.28 119.34C18.91 119.38 18.73 119.4 18.36 119.43C17.83 119.48 17.6 119.36 17.39 118.91C15.97 115.82 15.28 114.28 13.94 111.19C13.8 110.87 14.01 110.56 14.36 110.53C14.81 110.48 15.04 110.46 15.49 110.41C16.01 110.36 16.23 110.48 16.41 110.94C17.34 113.14 17.82 114.23 18.79 116.43C19.59 114.06 19.99 112.87 20.76 110.49C20.92 110 21.13 109.83 21.64 109.78C22.03 109.74 22.23 109.72 22.63 109.68C22.98 109.64 23.21 109.91 23.09 110.25C21.96 113.6 21.38 115.27 20.2 118.62C20.03 119.11 19.81 119.28 19.28 119.33V119.34Z"/>
+		<path d="M27.4 118.63C26.94 118.66 26.7001 118.45 26.6901 118.01C26.6301 114.84 26.6 113.25 26.55 110.07C26.55 109.63 26.77 109.39 27.21 109.37C27.6 109.35 27.8001 109.33 28.1901 109.31C28.6401 109.28 28.87 109.49 28.88 109.93C28.95 113.1 28.99 114.69 29.08 117.87C29.09 118.31 28.86 118.55 28.4 118.57L27.38 118.63H27.4Z"/>
+		<path d="M34.77 118.28C34.37 118.28 34.17 118.29 33.77 118.3C33.31 118.31 33.08 118.09 33.08 117.65C33.08 114.47 33.09 112.88 33.11 109.7C33.11 109.26 33.34 109.03 33.79 109.02C35.04 108.99 35.66 108.97 36.91 108.94C38.94 108.89 40.25 110.02 40.29 111.74C40.31 112.84 39.74 113.71 38.74 114.19C39.49 115.53 39.88 116.2 40.65 117.53C40.81 117.81 40.62 118.11 40.29 118.12C39.8 118.13 39.56 118.14 39.07 118.15C38.51 118.16 38.32 118.05 38.06 117.58C37.44 116.43 37.13 115.86 36.53 114.72C36.1 114.73 35.89 114.74 35.46 114.75C35.46 115.88 35.46 116.45 35.47 117.58C35.47 118.02 35.24 118.25 34.78 118.26L34.77 118.28ZM36.87 110.82C36.3 110.83 36.01 110.84 35.44 110.86C35.44 111.7 35.44 112.12 35.44 112.95C36.02 112.94 36.31 112.93 36.88 112.91C37.48 112.9 37.91 112.46 37.9 111.85C37.9 111.22 37.45 110.8 36.86 110.82H36.87Z"/>
+		<path d="M46.03 118.19C45.57 118.19 45.34 117.95 45.34 117.52C45.36 114.9 45.37 113.59 45.39 110.96L43.25 110.92C42.8 110.92 42.58 110.68 42.59 110.25C42.59 109.96 42.59 109.81 42.6 109.52C42.6 109.08 42.84 108.86 43.28 108.87C45.91 108.92 47.22 108.94 49.85 108.99C50.29 108.99 50.53 109.23 50.53 109.66C50.53 109.95 50.53 110.1 50.53 110.39C50.53 110.83 50.31 111.05 49.86 111.04C49 111.02 48.58 111.02 47.72 111C47.72 113.62 47.72 114.93 47.72 117.56C47.72 118 47.48 118.22 47.03 118.21C46.62 118.21 46.42 118.2 46.02 118.19H46.03Z"/>
+		<path d="M57.66 118.72C57.29 118.7 57.11 118.69 56.74 118.66C56.21 118.63 55.99 118.47 55.81 117.98C54.58 114.67 53.98 113.01 52.81 109.7C52.69 109.36 52.91 109.08 53.26 109.11C53.71 109.14 53.93 109.15 54.38 109.18C54.89 109.21 55.1 109.37 55.27 109.86C56.08 112.21 56.5 113.38 57.34 115.73C58.27 113.49 58.72 112.37 59.61 110.13C59.79 109.67 60.01 109.53 60.52 109.57L61.51 109.63C61.86 109.65 62.08 109.96 61.94 110.28C60.65 113.43 59.99 115 58.62 118.15C58.42 118.61 58.19 118.74 57.66 118.71V118.72Z"/>
+		<path d="M71.79 101.82C72.36 101.88 72.77 101.64 72.79 101.23C72.8 100.91 72.62 100.67 72.24 100.39C71.88 100.12 70.83 99.38 70.47 99.11C69.52 98.42 69.03 97.55 69.08 96.56C69.16 95.02 70.49 93.95 72.24 94.13C73.08 94.22 73.94 94.57 74.58 95.16C74.85 95.41 74.83 95.77 74.57 96.06C74.49 96.15 74.24 96.43 74.16 96.52C73.88 96.85 73.57 96.83 73.23 96.56C72.84 96.26 72.48 96.09 72.15 96.05C71.62 96 71.3 96.27 71.28 96.64C71.26 96.98 71.41 97.2 71.83 97.49C72.19 97.76 73.24 98.5 73.6 98.77C74.57 99.48 75.05 100.36 75.01 101.29C74.93 102.99 73.53 103.92 71.7 103.74C70.44 103.61 69.47 103.07 68.8 102.38C68.47 102.04 68.47 101.73 68.79 101.41C68.88 101.32 69.16 101.04 69.26 100.95C69.56 100.65 69.85 100.68 70.18 100.98C70.78 101.52 71.28 101.77 71.79 101.82V101.82Z"/>
+		<path d="M67.07 117.73C67.64 117.78 68.04 117.54 68.06 117.13C68.08 116.81 67.89 116.57 67.52 116.3C67.15 116.04 66.15 115.3 65.78 115.04C64.84 114.36 64.37 113.49 64.42 112.5C64.51 110.96 65.83 109.87 67.57 110.03C68.4 110.11 69.25 110.45 69.88 111.04C70.14 111.29 70.13 111.65 69.86 111.94C69.78 112.03 69.54 112.31 69.45 112.41C69.17 112.74 68.87 112.73 68.53 112.46C68.15 112.16 67.79 111.99 67.46 111.96C66.94 111.91 66.62 112.19 66.6 112.56C66.58 112.9 66.73 113.12 67.13 113.4C67.5 113.66 68.5 114.4 68.87 114.66C69.83 115.36 70.3 116.24 70.25 117.17C70.16 118.87 68.77 119.82 66.96 119.65C65.71 119.54 64.76 119 64.1 118.32C63.78 117.99 63.78 117.67 64.1 117.35C64.2 117.26 64.47 116.98 64.57 116.89C64.87 116.59 65.16 116.61 65.48 116.91C66.07 117.44 66.56 117.68 67.07 117.73V117.73Z"/>
+	</g>
+	<g class="nu-logo-monogram__shapes-n">
+		<path d="M43.47 70.09V33.67L189.28 171.77H193.81V48.46C193.81 20.7 203.09 11.6 221.66 4.55V0H160.75V4.55C179.32 11.6 188.6 20.7 188.6 48.46V129.91L59.77 6.14C53.89 0.68 52.3 0 48.45 0H0V4.55C10.64 5.69 16.98 8.65 32.38 23.66L38.27 29.35V70.09H43.48H43.47Z"/>
+		<path d="M43.52 125.26H38.22C37.54 150.61 28.27 159.29 10.42 166.08V170.63H71.33V166.08C53.47 159.3 44.21 150.61 43.53 125.26H43.52Z"/>
+	</g>
+</svg>
+	</a>
+</div>
+			<div class="site-footer__legal">
+				<p class="copyright">&copy; 2026 <a href="https://www.northeastern.edu/">
+		Northeastern University
+	</a>
+</p>
+<!--<script src="//consent.trustarc.com/notice?domain=news.northeastern.edu&gtm=1&pcookie&c=teconsent&text=true&cookieLink=https%3A%2F%2Fnortheastern.edu%2Fprivacy-information&js=nj&noticeType=bb&privacypolicylink=https%3A%2F%2Fnortheastern.edu%2Fprivacy-information" async="async" crossorigin=""></script>-->
+
+<div class="site-footer__legal-link">
+	<a href="https://northeastern.edu/privacy-information" target="_blank">Privacy Policy</a>
+</div>
+<div class="site-footer__legal-link" id="teconsent"></div>
+<div id="consent_blackbar"></div>
+<ul class="social-links">
+	<li class="social-links-item">
+		<a class="social-links-item__facebook"
+		   href="https://www.facebook.com/northeastern" target="_blank"
+		   rel="noopener noreferrer">
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path
+        d="M15.75 8C15.75 3.71875 12.2812 0.25 8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 11.8681 3.08406 15.0744 6.78906 15.6562V10.2403H4.82031V8H6.78906V6.2925C6.78906 4.35031 7.94531 3.2775 9.71625 3.2775C10.5644 3.2775 11.4513 3.42875 11.4513 3.42875V5.335H10.4738C9.51125 5.335 9.21094 5.9325 9.21094 6.54531V8H11.3603L11.0166 10.2403H9.21094V15.6562C12.9159 15.0744 15.75 11.8681 15.75 8Z" fill="currentColor"/>
+</svg>
+			<span class="screen-reader-text">Facebook</span>
+		</a>
+	</li>
+	<li class="social-links-item">
+		<a class="social-links-item__instagram"
+		   href="https://www.instagram.com/northeasternglobalnews" target="_blank"
+		   rel="noopener noreferrer">
+			<svg width="30" height="30" fill="none" viewBox="0 0 30 30"
+     xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15 0c-4.074 0-4.584.017-6.184.09-1.597.073-2.688.327-3.642.698-1 .376-1.907.966-2.657 1.73a7.358 7.358 0 00-1.73 2.656C.418 6.128.163 7.22.09 8.817.018 10.416 0 10.925 0 15c0 4.075.017 4.584.09 6.184.073 1.597.327 2.688.698 3.642.376 1 .966 1.907 1.73 2.657a7.359 7.359 0 002.656 1.73c.954.37 2.045.624 3.642.697 1.6.073 2.11.09 6.184.09s4.584-.017 6.184-.09c1.597-.073 2.688-.327 3.642-.698 1-.376 1.907-.966 2.657-1.73a7.358 7.358 0 001.73-2.656c.37-.954.624-2.045.697-3.642.073-1.6.09-2.11.09-6.184s-.017-4.584-.09-6.184c-.073-1.597-.327-2.688-.698-3.642a7.353 7.353 0 00-1.73-2.657 7.358 7.358 0 00-2.656-1.73C23.872.418 22.78.163 21.183.09 19.584.018 19.075 0 15 0zm0 2.703c4.005 0 4.48.015 6.062.087 1.462.067 2.256.31 2.785.517.7.271 1.2.597 1.725 1.121.525.525.85 1.025 1.121 1.725.206.529.45 1.323.517 2.785.072 1.582.087 2.057.087 6.062 0 4.005-.015 4.48-.087 6.062-.067 1.462-.31 2.256-.517 2.785a4.646 4.646 0 01-1.121 1.725 4.642 4.642 0 01-1.725 1.121c-.529.206-1.323.45-2.785.517-1.582.072-2.056.087-6.062.087s-4.48-.015-6.062-.087c-1.462-.067-2.256-.31-2.785-.517a4.646 4.646 0 01-1.725-1.121 4.648 4.648 0 01-1.121-1.725c-.206-.529-.45-1.323-.517-2.785-.072-1.582-.087-2.057-.087-6.062 0-4.005.015-4.48.087-6.062.067-1.462.31-2.256.517-2.785.271-.7.597-1.2 1.121-1.725a4.643 4.643 0 011.725-1.121c.529-.206 1.323-.45 2.785-.517 1.582-.072 2.057-.087 6.062-.087z" fill="currentColor"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M15 20.005a5.005 5.005 0 110-10.01 5.005 5.005 0 010 10.01zM15 7.29a7.71 7.71 0 100 15.42 7.71 7.71 0 000-15.42zm9.953-.14a1.822 1.822 0 11-3.645 0 1.822 1.822 0 013.645 0" fill="currentColor"></path></svg>			<span class="screen-reader-text">Instagram</span>
+		</a>
+	</li>
+	<li class="social-links-item">
+		<a class="social-links-item__linkedin"
+		   href="https://www.linkedin.com/school/northeastern-university/"
+		   target="_blank" rel="noopener noreferrer">
+			<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+<path d="M14 1H1.99687C1.44687 1 1 1.45313 1 2.00938V13.9906C1 14.5469 1.44687 15 1.99687 15H14C14.55 15 15 14.5469 15 13.9906V2.00938C15 1.45313 14.55 1 14 1ZM5.23125 13H3.15625V6.31875H5.23438V13H5.23125ZM4.19375 5.40625C3.52812 5.40625 2.99063 4.86562 2.99063 4.20312C2.99063 3.54063 3.52812 3 4.19375 3C4.85625 3 5.39687 3.54063 5.39687 4.20312C5.39687 4.86875 4.85938 5.40625 4.19375 5.40625ZM13.0094 13H10.9344V9.75C10.9344 8.975 10.9187 7.97813 9.85625 7.97813C8.775 7.97813 8.60938 8.82188 8.60938 9.69375V13H6.53438V6.31875H8.525V7.23125H8.55312C8.83125 6.70625 9.50938 6.15312 10.5188 6.15312C12.6187 6.15312 13.0094 7.5375 13.0094 9.3375V13Z" fill="currentColor"/>
+</svg>
+			<span class="screen-reader-text">LinkedIn</span>
+		</a>
+	</li>
+	<li class="social-links-item">
+		<a class="social-links-item__tiktok"
+		   href="https://www.tiktok.com/@northeasternu" target="_blank"
+		   rel="noopener noreferrer">
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M11.3534 0C11.6366 2.27047 12.9962 3.62412 15.3599 3.76812V6.32181C13.9901 6.44661 12.7902 6.029 11.3946 5.24177V10.0179C11.3946 16.0853 4.2983 17.9814 1.44535 13.6324C-0.387947 10.834 0.734692 5.92339 6.61567 5.72659V8.41947C6.16764 8.48668 5.68872 8.59228 5.25099 8.73148C3.94297 9.1443 3.20141 9.91712 3.4074 11.2804C3.80392 13.8917 8.94334 14.6645 8.51592 9.56191V0.00480016H11.3534V0Z" fill="currentColor"/>
+</svg>
+			<span class="screen-reader-text">Tiktok</span>
+		</a>
+	</li>
+	<li class="social-links-item">
+		<a class="social-links-item__twitter"
+		   href="https://x.com/northeastern" target="_blank"
+		   rel="noopener noreferrer">
+			<svg fill="currentColor" viewBox="0 0 24 24" version="1.1"  xmlns="http://www.w3.org/2000/svg">
+	<path d="M13.982 10.622 20.54 3h-1.554l-5.693 6.618L8.745 3H3.5l6.876 10.007L3.5 21h1.554l6.012-6.989L15.868 21h5.245l-7.131-10.378Zm-2.128 2.474-.697-.997-5.543-7.93H8l4.474 6.4.697.996 5.815 8.318h-2.387l-4.745-6.787Z" />
+</svg>
+			<span class="screen-reader-text">X (Twitter)</span>
+		</a>
+	</li>
+	<li class="social-links-item">
+		<a class="social-links-item__youtube"
+		   href="https://www.youtube.com/user/Northeastern/featured"
+		   target="_blank"
+		   rel="noopener noreferrer">
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15.2682 4.33564C15.0937 3.67869 14.5797 3.1613 13.927 2.98572C12.7439 2.66666 7.99999 2.66666 7.99999 2.66666C7.99999 2.66666 3.2561 2.66666 2.07302 2.98572C1.42032 3.16133 0.906267 3.67869 0.731795 4.33564C0.414795 5.52639 0.414795 8.01078 0.414795 8.01078C0.414795 8.01078 0.414795 10.4952 0.731795 11.6859C0.906267 12.3429 1.42032 12.8387 2.07302 13.0143C3.2561 13.3333 7.99999 13.3333 7.99999 13.3333C7.99999 13.3333 12.7439 13.3333 13.927 13.0143C14.5797 12.8387 15.0937 12.3429 15.2682 11.6859C15.5852 10.4952 15.5852 8.01078 15.5852 8.01078C15.5852 8.01078 15.5852 5.52639 15.2682 4.33564ZM6.44846 10.2664V5.75514L10.4134 8.01083L6.44846 10.2664Z" fill="currentColor"/>
+</svg>
+			<span class="screen-reader-text">Youtube</span>
+		</a>
+	</li>
+</ul>
+			</div>
+		</section>
+	</div>
+</footer>
+</body>
+</html>

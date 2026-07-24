@@ -1,0 +1,447 @@
+/**
+ * Shared foundations for the category-landing prototypes.
+ *
+ * PROTOTYPE ONLY — hand-inlined from design-system-v2 tokens
+ * (themes/ngn-theme/src/styles/design-system-v2/) and the App_Bar /
+ * site-footer component styles so the static pages render faithfully
+ * without the WP build pipeline.
+ */
+
+:root {
+	/* color — ngn-v2 sys tokens (light scheme) */
+	--ngn-v2-sys-color-primary: #c8102e;
+	--ngn-v2-sys-color-on-primary: #fff;
+	--ngn-v2-sys-color-background: #fff;
+	--ngn-v2-sys-color-surface: #fff;
+	--ngn-v2-sys-color-surface-container: #f5f5f5;
+	--ngn-v2-sys-color-surface-container-low: #fafafa;
+	--ngn-v2-sys-color-on-surface: #1f1f1f;
+	--ngn-v2-sys-color-on-surface-variant: #49454f;
+	--ngn-v2-sys-color-outline: #79747e;
+	--ngn-v2-sys-color-outline-variant: #e0e0e0;
+	--ngn-v2-sys-color-inverse-surface: #1f1f1f;
+	--ngn-v2-sys-color-inverse-on-surface: #f5f5f5;
+	--ngn-v2-sys-color-tertiary-blue-dark: #0c3354;
+	--ngn-v2-sys-color-tertiary-blue-soft: #b3d1e6;
+
+	/* wp custom palette (theme.json) — footer + wordmark bindings */
+	--wp--custom--palette--black: #000;
+	--wp--custom--palette--red: #cf2b28;
+	--wp--custom--palette--dark-red: #d5202d;
+	--wp--custom--palette--darker-red: #a81f25;
+	--wp--custom--color--emphasize: #000;
+	--wp--custom--color--accent: #cf2b28;
+
+	/* typography (typography-ref.scss) */
+	--font-sans: lato, inter, helvetica, arial, sans-serif;
+	--font-serif: kepler-std, georgia, serif;
+	--font-serif-display: kepler-std-display, kepler-std, georgia, serif;
+	--font-serif-condensed: kepler-std-condensed-subhead, kepler-std, georgia, serif;
+	--font-display-condensed: kepler-std-condensed-display, kepler-std, georgia, serif;
+	--font-serif-caption: kepler-std-caption, kepler-std, georgia, serif;
+
+	/* spacing (spacing-ref.scss 8px grid) */
+	--sp-micro: 4px;
+	--sp-base: 8px;
+	--sp-small: 12px;
+	--sp-compact: 16px;
+	--sp-medium: 24px;
+	--sp-large: 32px;
+	--sp-large-inc: 40px;
+	--sp-xl: 48px;
+	--sp-xxl: 64px;
+
+	/* shape (shape-ref.scss) */
+	--shape-xs: 4px;
+	--shape-sm: 8px;
+	--shape-md: 12px;
+	--shape-lg: 16px;
+	--shape-full: 9999px;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+	margin: 0;
+	background: var(--ngn-v2-sys-color-background);
+	color: var(--ngn-v2-sys-color-on-surface);
+	font-family: var(--font-sans);
+	font-size: 16px;
+	line-height: 1.5;
+}
+
+img { max-width: 100%; display: block; height: auto; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, h4, p, ul, figure { margin: 0; padding: 0; }
+ul { list-style: none; }
+button { font: inherit; }
+
+.screen-reader-text {
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+	position: absolute;
+}
+
+.wrapper {
+	max-width: 1080px;
+	margin-inline: auto;
+	padding-inline: 16px;
+}
+
+.wrapper--wide { max-width: 1200px; }
+
+/* ------------------------------------------------------------------ *
+ * App Bar — Logo_And_Date variant (ngn-app App_Bar component)
+ * ------------------------------------------------------------------ */
+
+.ngn-bar {
+	background: var(--ngn-v2-sys-color-surface);
+	padding-inline: var(--sp-micro);
+}
+
+.ngn-bar.is-sticky {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+.ngn-bar .bar__wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--sp-base);
+	padding-block: var(--sp-base);
+	min-height: 56px;
+}
+
+.ngn-bar.has-bottom-divider .bar__wrapper::after {
+	background: var(--ngn-v2-sys-color-outline-variant);
+	bottom: 0;
+	content: "";
+	height: 1px;
+	left: 0;
+	pointer-events: none;
+	position: absolute;
+	right: 0;
+}
+
+.ngn-bar.is-config-logo-and-date .app-bar__logo {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+/* mobile logo override — lettermark below 600px, wordmark from medium up */
+.app-bar__logo.app-bar__logo--desktop { display: none; }
+
+@media (width >= 600px) {
+	.app-bar__logo.app-bar__logo--mobile { display: none; }
+	.app-bar__logo.app-bar__logo--desktop { display: inline-flex; }
+}
+
+.app-bar__logo {
+	display: inline-flex;
+	align-items: center;
+}
+
+.app-bar__logo svg { height: 100%; width: auto; }
+.app-bar__logo-link { display: inline-flex; }
+
+.app-bar__text {
+	font-size: 13.6px; /* Label_MD */
+	color: var(--ngn-v2-sys-color-on-surface-variant);
+	letter-spacing: 0.25px;
+}
+
+.app-bar__trailing-elements {
+	display: flex;
+	align-items: center;
+	flex: 0 0 auto;
+	gap: var(--sp-micro);
+}
+
+.app-bar__leading,
+.app-bar__trailing-elements { z-index: 1; }
+
+.icon-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	height: 48px;
+	border: 0;
+	border-radius: var(--shape-full);
+	background: transparent;
+	color: var(--ngn-v2-sys-color-on-surface);
+	cursor: pointer;
+}
+
+.icon-button:hover { background: color-mix(in srgb, var(--ngn-v2-sys-color-on-surface) 8%, transparent); }
+.icon-button svg { width: 24px; height: 24px; }
+
+@media (width < 600px) {
+	.ngn-bar .app-bar__text { display: none; }
+}
+
+/* ------------------------------------------------------------------ *
+ * Shared editorial atoms
+ * ------------------------------------------------------------------ */
+
+.headline {
+	font-family: var(--font-serif-display);
+	font-weight: 600;
+	line-height: 1.15;
+	letter-spacing: -0.25px;
+}
+
+a:hover .headline { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+.kicker {
+	font-family: var(--font-sans);
+	font-size: 12px; /* Label_SM */
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: var(--ngn-v2-sys-color-primary);
+}
+
+.blurb {
+	font-family: var(--font-serif);
+	font-size: 16px;
+	line-height: 1.45;
+	color: var(--ngn-v2-sys-color-on-surface-variant);
+}
+
+.post-meta {
+	font-family: var(--font-sans);
+	font-size: 12px;
+	letter-spacing: 0.25px;
+	color: var(--ngn-v2-sys-color-on-surface-variant);
+}
+
+.post-meta .byline { font-weight: 700; }
+
+.section-label {
+	font-family: var(--font-sans);
+	font-size: 15px; /* Label_LG */
+	font-weight: 800;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	display: flex;
+	align-items: baseline;
+	gap: var(--sp-small);
+}
+
+.section-label a {
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--ngn-v2-sys-color-primary);
+	letter-spacing: 0.4px;
+	margin-left: auto;
+	white-space: nowrap;
+}
+
+.media-frame {
+	overflow: hidden;
+	background: var(--ngn-v2-sys-color-surface-container);
+}
+
+.media-frame img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	aspect-ratio: 3 / 2;
+}
+
+.load-more {
+	display: flex;
+	align-items: center;
+	gap: var(--sp-base);
+	margin-block: var(--sp-xxl) 0;
+}
+
+.load-more::before,
+.load-more::after {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: var(--ngn-v2-sys-color-outline-variant);
+}
+
+.load-more button {
+	border: 1px solid var(--ngn-v2-sys-color-outline);
+	background: var(--ngn-v2-sys-color-surface);
+	color: var(--ngn-v2-sys-color-on-surface);
+	font-family: var(--font-sans);
+	font-weight: 700;
+	font-size: 13.6px;
+	letter-spacing: 0.4px;
+	padding: 10px 28px;
+	border-radius: var(--shape-full);
+	cursor: pointer;
+}
+
+.load-more button:hover { background: var(--ngn-v2-sys-color-surface-container); }
+
+/* ------------------------------------------------------------------ *
+ * Site footer — reproduced from site-footer.scss (contrast scheme)
+ * ------------------------------------------------------------------ */
+
+.site-footer {
+	--wp--custom--color--background: var(--wp--custom--palette--black);
+	--wp--custom--color--foreground: #fff;
+	--wp--custom--color--emphasize: #fff;
+	--wp--custom--color--accent: var(--wp--custom--palette--red);
+	--wp--custom--color--border: #4b4b4b;
+
+	background: var(--wp--custom--color--background);
+	color: var(--wp--custom--color--foreground);
+	margin-top: 64px;
+	font-size: 14px;
+}
+
+.site-footer a:hover { text-decoration: underline; }
+
+.site-footer > .wrapper {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-between;
+	padding-top: 28px;
+	max-width: 1080px;
+}
+
+.site-footer .site-summary { flex-basis: 100%; margin-top: 48px; margin-bottom: 16px; }
+.site-footer .nameplate { margin-bottom: 16px; }
+.site-footer .nameplate__media { display: block; max-width: 560px; }
+.site-footer .ngn-wordmark { width: 100%; height: auto; }
+
+.site-footer__menus,
+.site-footer__tools {
+	flex: 1 0 auto;
+	margin: 0 0 32px;
+}
+
+.site-footer__menus {
+	display: flex;
+	font-weight: 700;
+	justify-content: flex-start;
+	gap: 28px;
+}
+
+.site-footer-menu { flex: 1 1 50%; min-width: 180px; }
+.site-footer-menu .menu-item { line-height: 1.5; font-size: 14px; }
+.site-footer-menu .menu-item + .menu-item { margin-top: 16px; }
+.site-footer .menu-item-has-children { padding-top: 16px; }
+.site-footer .menu-item-has-children .sub-menu { margin-top: 16px; }
+.site-footer .sub-menu .menu-item + .menu-item { margin-top: 8px; }
+.site-footer .sub-menu { padding-left: 12px; }
+
+.site-footer__tools { max-width: 360px; }
+.site-footer__tools > * + * { margin-top: 28px; }
+
+.site-footer :is(.wp-block-search__label, .newsletter-subscribe__label) {
+	display: block;
+	font: normal 400 19px/1 var(--font-serif-display);
+	margin: 0 0 12px;
+}
+
+.site-footer :is(.wp-block-search__inside-wrapper, .newsletter-subscribe__inside-wrapper) {
+	display: flex;
+	border-bottom: 1px solid #4b4b4b;
+	padding-bottom: 6px;
+	gap: 8px;
+}
+
+.site-footer input[type="search"],
+.site-footer input[type="email"] {
+	flex: 1;
+	background: transparent;
+	border: 0;
+	color: #fff;
+	font: 14px var(--font-sans);
+	outline-offset: 4px;
+}
+
+.site-footer :is(.wp-block-search__button, .newsletter-subscribe__button) {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: transparent;
+	border: 0;
+	color: #fff;
+	font: 700 13px var(--font-sans);
+	cursor: pointer;
+	padding: 0 4px;
+}
+
+.site-footer .icon svg { width: 18px; height: 18px; display: block; }
+
+.site-footer__colophon {
+	display: flex;
+	flex-basis: 100%;
+	flex-flow: column nowrap;
+	margin-top: 32px;
+}
+
+.site-footer .nu-link {
+	filter: grayscale(1);
+	height: 100px;
+	width: 128px;
+	margin-bottom: 50px;
+	align-self: end;
+	transition: filter 0.25s ease;
+}
+
+.site-footer .nu-link:is(:hover, :focus-within) { filter: none; }
+.site-footer .nu-link :is(img, svg) { height: 100%; width: auto; }
+.site-footer .nu-logo-monogram__shapes-n { fill: var(--wp--custom--color--accent); }
+.site-footer .nu-logo-monogram__shapes-motto { fill: var(--wp--custom--color--foreground); }
+
+.site-footer__legal {
+	border-top: 1px solid var(--wp--custom--color--border);
+	display: flex;
+	flex-basis: 100%;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 8px;
+	padding: 20px 0;
+}
+
+.site-footer__legal p { margin: 0; }
+
+.site-footer__legal-link::before {
+	content: "|";
+	margin-right: 8px;
+	margin-left: 8px;
+}
+
+.site-footer__legal-link a { text-decoration: underline; }
+.site-footer__legal-link:empty { display: none; }
+
+.site-footer .social-links {
+	display: flex;
+	gap: 20px;
+	align-items: center;
+	margin-left: auto;
+}
+
+.site-footer .social-links svg { width: 16px; height: 16px; display: block; fill: currentcolor; }
+.site-footer .social-links-item__instagram svg,
+.site-footer .social-links-item__twitter svg { width: 17px; height: 17px; }
+
+@media (width < 840px) {
+	.site-footer > .wrapper { flex-flow: column wrap; }
+	.site-footer .nu-link { align-self: center; }
+	.site-footer__legal { flex-wrap: wrap; justify-content: center; }
+	.site-footer .social-links { margin-left: 0; flex-basis: 100%; justify-content: center; margin-top: 8px; }
+}
