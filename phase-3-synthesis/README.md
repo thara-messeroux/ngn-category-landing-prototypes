@@ -1,5 +1,9 @@
 # Phase 3: Design Synthesis (July 23, 2026)
 
+**Live preview (public, opens in any browser, no login):**
+
+https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-3-synthesis/
+
 Status: frozen. This is the exact design shown to stakeholders on July 23, 2026. We do not change it after the presentation, so it stays as the record of what was approved. New work continues in phase-4-mobile-refinement.
 
 ## What this is

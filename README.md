@@ -1,5 +1,16 @@
 # Category landing page prototypes (PROTOTYPE ONLY)
 
+## Live previews (public, no login)
+
+Open in any browser, no account needed.
+
+| Phase | Public link |
+| --- | --- |
+| Phase 1: First concepts | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-1-concepts/ |
+| Phase 2: Live data | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-2-live-data/ |
+| Phase 3: Combined design (presented) | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-3-synthesis/ |
+| Phase 4: Mobile refinement (current) | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-4-mobile-refinement/ |
+
 Six static HTML explorations of a redesigned category landing page
 (`/category/university-news/` as the example), built strictly from
 design-system-v2 tokens and existing component vocabulary. Nothing here

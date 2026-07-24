@@ -1,5 +1,9 @@
 # Phase 2: Live Data (July 21 to 22, 2026)
 
+**Live preview (public, opens in any browser, no login):**
+
+https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-2-live-data/
+
 Status: frozen. Four directions rebuilt from the team's 27 Pastel comments and the hand sketches, this time with real stories, photos, bylines, and archive counts pulled from the live site. The fonts are embedded, so the page renders the same anywhere, including offline.
 
 | Option | Idea | Reference |

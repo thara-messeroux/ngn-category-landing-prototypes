@@ -1,5 +1,9 @@
 # Phase 4: Mobile Refinement
 
+**Live preview (public, opens in any browser, no login):**
+
+https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-4-mobile-refinement/
+
 Status: active. Started as an exact copy of phase-3-synthesis, the version presented and approved on July 23, 2026. Phase 3 stays untouched. All new work happens here.
 
 Target: the presentation on Monday, July 27, 2026.

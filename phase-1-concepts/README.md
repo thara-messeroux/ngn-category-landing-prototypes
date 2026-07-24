@@ -1,5 +1,9 @@
 # Phase 1: First Concepts (July 14, 2026)
 
+**Live preview (public, opens in any browser, no login):**
+
+https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-1-concepts/
+
 Status: frozen. The opening set of ideas, shared with the team to start the feedback conversation. It uses placeholder images with the real design system tokens. Use the pill at the bottom of the page to switch between the three versions.
 
 | Version | Concept | Reference |
