@@ -21,19 +21,28 @@ Present: Zach Christensen, Stephanie Sim, Xristopher Anderton, Denis Skarep. The
 - [ ] Remove the title redundancy. "University News" and the topic name (Commencement, for example) each repeat several times on one page.
 - [ ] Add treatment or highlighted hierarchy at the top of the page to feature the most recent images.
 
-## Still open from Zach's July 24 Pastel review
+## Zach's July 24 Pastel review
 
-Sixteen comments, most agreed with by the room. Carried into this phase:
+Sixteen comments, all still marked active. Comment 1 is praise for the Most Read numerals, the other fifteen are actionable and tracked here.
 
-- [ ] Heading text should match the home page card headings.
-- [ ] Slightly more space above the links than below.
-- [ ] The Latest section feels wide. Consider a narrower measure or a two-across layout for those stories.
-- [ ] One heading can be significantly smaller or removed.
-- [ ] Consider a small Featured section near the top.
-- [ ] Vertical spacing on mobile is inconsistent.
-- [ ] The secondary nav may not be needed on mobile.
-- [ ] The menu and search icons read heavier than the rest of the app bar.
-- [ ] Top and bottom padding on one section can be reduced.
+Pastel board: https://usepastel.com/link/4wejp064/
+
+- [x] 1. "This is a better use of these numbers." Praise for the Most Read numeral redesign, no action needed.
+- [ ] 2. Heading text should match the home page card headings.
+- [ ] 3. Slightly more space above the links than below.
+- [ ] 4. App bar item, flagged as not strictly page related.
+- [ ] 5. Newsletter placement. Resolved in the July 27 review: keep the newsletter, keep Seen around campus, give the photo module its own spot.
+- [ ] 6. "We can drop this." Needs Zach to point at the element, unclear from the comment alone.
+- [ ] 7. Navigation redundancy now that the nav has switched and University News sits right above.
+- [ ] 8. The Latest section feels excessively wide.
+- [ ] 9. One heading can be significantly smaller or removed.
+- [ ] 10. Add a small Featured section near the top.
+- [ ] 11. Vertical spacing on mobile is inconsistent.
+- [ ] 12. Place the Latest stories side by side to use the width better.
+- [ ] 13. Same treatment applies to another section.
+- [ ] 14. The menu and search icons read heavier than the rest of the app bar.
+- [ ] 15. Reduce top and bottom padding on one section.
+- [ ] 16. Consider removing the secondary nav entirely on mobile.
 
 ## Previews
 
