@@ -13,8 +13,8 @@ Target: the final review on Thursday, July 30, 2026, where the design is expecte
 The July 27 team review went well: refinements only, no rework.
 
 ### Seen around campus
-- [ ] Give the photo module its own space with a more featured treatment, so it is not competing for attention with the newsletter and the Latest stories.
-- [ ] Keep the newsletter sticky in its own lane.
+- [x] Give the photo module its own space with a more featured treatment. It is now a full width band with larger photos, between the Latest stories and the topic sections.
+- [x] Keep the newsletter sticky in its own lane.
 
 ### Subtopic pages
 - [ ] Remove the repeated titles. The section name and the topic name each appear several times on one page.
