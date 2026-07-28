@@ -4,9 +4,9 @@
 
 https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-4-mobile-refinement/
 
-Status: active. Started as an exact copy of phase-3-synthesis, the version presented and approved on July 23, 2026. Phase 3 stays untouched. All new work happens here.
+Status: frozen. This is the exact design presented to stakeholders on Monday, July 27, 2026. It stays as the record of what was shown. New work continues in phase-5-stakeholder-refinement.
 
-Target: the presentation on Monday, July 27, 2026.
+The review went well: refinements only, no rework. Those refinements are tracked in phase-5-stakeholder-refinement.
 
 ## Built on July 24, 2026
 
@@ -62,7 +62,7 @@ The sticky bar with the title on the left and the topics on the right, built by 
 
 ## How to view
 
-Live preview (opens in a browser): [Live preview](https://claude.ai/code/artifact/9a299877-4ab2-4ee0-bf5e-91a4da8f654b).
+Live preview (public, opens in any browser, no login): https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-4-mobile-refinement/
 
 Full-size screenshots: [Landing desktop](phase-4-mobile-refinement-desktop-2026-07-24.png), [Landing mobile](phase-4-mobile-refinement-mobile-2026-07-24.png), [Subtopic desktop](phase-4-mobile-refinement-subtopic-co-op-desktop-2026-07-24.png), [Subtopic mobile](phase-4-mobile-refinement-subtopic-co-op-mobile-2026-07-24.png), [Site menu open](phase-4-mobile-refinement-site-menu-desktop-2026-07-24.png), [Search open](phase-4-mobile-refinement-search-desktop-2026-07-24.png), [Zach's header pattern](../screenshots/10-composite-v5-desktop.png).
 

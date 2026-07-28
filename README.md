@@ -9,7 +9,8 @@ Open in any browser, no account needed.
 | Phase 1: First concepts | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-1-concepts/ |
 | Phase 2: Live data | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-2-live-data/ |
 | Phase 3: Combined design (presented) | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-3-synthesis/ |
-| Phase 4: Mobile refinement (current) | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-4-mobile-refinement/ |
+| Phase 4: Mobile refinement (presented July 27) | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-4-mobile-refinement/ |
+| Phase 5: Stakeholder refinement (current) | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-5-stakeholder-refinement/ |
 
 Six static HTML explorations of a redesigned category landing page
 (`/category/university-news/` as the example), built strictly from
