@@ -668,7 +668,7 @@ body.topic-open .wrapper:has(.topic-group) { display: none; }
 <style>
 /* Seen around campus: its own full width band so the photography is featured
    rather than competing with the newsletter and the story river */
-.campus-band { background: var(--ngn-v2-sys-color-surface-container); padding-block: var(--sp-xl) calc(var(--sp-xl) * 1.5); margin-top: var(--sp-xl); }
+.campus-band { background: var(--ngn-v2-sys-color-surface-container); padding-block: var(--sp-xl) calc(var(--sp-xl) * 1.5); margin-top: var(--sp-xl); overflow-x: clip; }
 .campus-band__head { display: flex; align-items: baseline; gap: var(--sp-medium); margin-bottom: var(--sp-medium); }
 .campus-band__head svg { width: 22px; height: 22px; color: var(--ngn-v2-sys-color-primary); flex: 0 0 auto; align-self: center; }
 .campus-band__title { font-family: var(--font-serif-display); font-size: 24px; font-weight: 600; line-height: 1.1; margin: 0; }
@@ -700,6 +700,85 @@ body.topic-open .wrapper:has(.topic-group) { display: none; }
   .campus-band__title { font-size: 21px; }
 }
 </style>
+<style>
+/* Seen around campus: photos sit like prints set down on a surface, each on a
+   small paper stack. They fan into place when the section scrolls into view,
+   and straighten when you point at one. */
+.campus-band__item { position: relative; }
+.campus-band__item::before,
+.campus-band__item::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  aspect-ratio: 3 / 2;
+  background: var(--ngn-v2-sys-color-surface);
+  border: 1px solid var(--ngn-v2-sys-color-outline-variant);
+  transition: transform .55s cubic-bezier(.2,.7,.2,1);
+  z-index: 0;
+}
+.campus-band__item::before { transform: rotate(2.4deg) translate(6px, 4px); }
+.campus-band__item::after { transform: rotate(1.2deg) translate(3px, 2px); }
+.campus-band__item .media-frame { position: relative; z-index: 1; }
+
+/* resting tilt, each print set down a little differently */
+.campus-band__item--lead { --tilt: -1.4deg; }
+.campus-band__item--second { --tilt: 1.1deg; }
+.campus-band__item--third { --tilt: -0.9deg; }
+.campus-band__item {
+  transform: rotate(var(--tilt));
+  transition: transform .55s cubic-bezier(.2,.7,.2,1), opacity .55s ease;
+}
+
+/* pre-reveal: gathered to the left, tilted harder, waiting to fan out */
+.campus-band__items:not(.is-revealed) .campus-band__item { opacity: 0; }
+@media (width >= 840px) {
+  .campus-band__items:not(.is-revealed) .campus-band__item--lead { transform: rotate(-7deg) translate(-18px, 14px) scale(.96); }
+  .campus-band__items:not(.is-revealed) .campus-band__item--second { transform: rotate(-5deg) translate(-58%, 18px) scale(.94); }
+  .campus-band__items:not(.is-revealed) .campus-band__item--third { transform: rotate(-6deg) translate(-118%, 12px) scale(.94); }
+}
+@media (width < 840px) {
+  .campus-band__items:not(.is-revealed) .campus-band__item { transform: rotate(-4deg) translateY(22px) scale(.97); }
+}
+.campus-band__items.is-revealed .campus-band__item--lead { transition-delay: 0ms; }
+.campus-band__items.is-revealed .campus-band__item--second { transition-delay: 110ms; }
+.campus-band__items.is-revealed .campus-band__item--third { transition-delay: 220ms; }
+
+/* pointing at a print lifts and straightens it, and the stack settles under it */
+.campus-band__item:hover,
+.campus-band__item:focus-visible { transform: rotate(0deg) translateY(-6px); z-index: 2; }
+.campus-band__item:hover::before { transform: rotate(4deg) translate(10px, 7px); }
+.campus-band__item:hover::after { transform: rotate(2deg) translate(5px, 4px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .campus-band__item,
+  .campus-band__item::before,
+  .campus-band__item::after { transition: none; }
+  .campus-band__items:not(.is-revealed) .campus-band__item { opacity: 1; transform: rotate(var(--tilt)); }
+  .campus-band__item:hover, .campus-band__item:focus-visible { transform: rotate(var(--tilt)); }
+}
+</style>
+<script>
+(() => {
+  const start = () => {
+    const items = document.querySelector('.campus-band__items');
+    if (!items) return;
+    if (!('IntersectionObserver' in window)) { items.classList.add('is-revealed'); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        items.classList.add('is-revealed');
+        io.disconnect();
+      });
+    }, { threshold: 0.2 });
+    io.observe(items);
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+})();
+</script>
 </head>
 <body>
 <a href="#site-content" class="screen-reader-text">Skip to content</a>
