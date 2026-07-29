@@ -18,7 +18,7 @@ Present: Zach Christensen, Stephanie Sim, Denis Skarep. The design was well rece
 - [x] Keep the newsletter sticky, and move Seen around campus to its own placement. The newsletter is now alone in the sticky rail.
 
 ### Video (added July 28)
-- [x] Adaptive hero. When a recent video exists the page opens with a cinematic video lead. When there is none it falls back to the standard featured package, so quieter categories never look empty. A toggle in the corner of the prototype switches between both states.
+- [x] Adaptive lead. When a category has a recent video, the video takes the lead slot in the featured package, with the headline set over the frame. When there is none, the usual photo lead appears instead. The right hand stories stay in place either way, so the page keeps one structure. A toggle in the corner of the prototype switches between both states.
 - [ ] Confirm the videographer credit. The hero shows a credit line, currently a placeholder, that should carry the videographer name the way the photo module carries the photographer.
 
 ### Subtopic pages
