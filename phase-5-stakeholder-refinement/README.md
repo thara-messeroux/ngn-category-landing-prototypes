@@ -22,7 +22,8 @@ Present: Zach Christensen, Stephanie Sim, Denis Skarep. The design was well rece
 - [x] The three most recent videos lead each column at full size. The next three sit beneath them as smaller cards, so the section is ordered by recency rather than by an arbitrary choice.
 - [x] All videos points at the real Video Archives page on the live site.
 - [x] Placed between Most Read and The Latest, so the page alternates between news and media rather than stacking both media sections together.
-- [ ] Confirm the videographer names. Each video now carries a byline in the same style as the photo module. The names shown are placeholders and need to be replaced with whoever actually shot each piece before this goes any further.
+- [x] No byline on the video cards. Photos have one photographer, but a video is usually a team: the Operation Valkyrie piece carries four credits on its own page. Showing a single name would misrepresent who made it, and four names do not fit a card. Credits belong on the video page, where there is room to list everyone.
+- [x] Every video links to its real page on the live site, checked.
 
 ### Subtopic pages
 - [ ] Remove the title redundancy. "University News" and the topic name (Commencement, for example) each repeat several times on one page.
