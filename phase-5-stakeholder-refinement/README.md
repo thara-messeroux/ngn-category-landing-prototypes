@@ -21,7 +21,7 @@ Present: Zach Christensen, Stephanie Sim, Denis Skarep. The design was well rece
 - [x] A Video section, giving the videographers a home the way Seen around campus does for the photographers. Full width, three columns, six videos: each column leads with one video and carries a second beneath it. Every frame keeps its true 16 by 9 shape and shows its running time.
 - [x] The three most recent videos lead each column at full size. The next three sit beneath them as smaller cards, so the section is ordered by recency rather than by an arbitrary choice.
 - [x] All videos points at the real Video Archives page on the live site.
-- [x] Placed between Most Read and The Latest, so the page alternates between news and media rather than stacking both media sections together.
+- [x] Placed directly above Seen around campus, after The Latest. Video and photography are the two places where the newsroom shows off its own people, so they sit together and get the same standing on the page. The white background on Video and the tinted one on Seen around campus keep them from blurring into each other.
 - [x] No byline on the video cards. Photos have one photographer, but a video is usually a team: the Operation Valkyrie piece carries four credits on its own page. Showing a single name would misrepresent who made it, and four names do not fit a card. Credits belong on the video page, where there is room to list everyone.
 - [x] Every video links to its real page on the live site, checked.
 
