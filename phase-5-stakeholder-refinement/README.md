@@ -39,7 +39,7 @@ Sixteen comments, all still marked active. Comment 1 is praise for the Most Read
 Pastel board: https://usepastel.com/link/4wejp064/
 
 - [x] 1. "This is a better use of these numbers." Praise for the Most Read numeral redesign, no action needed.
-- [ ] 2. Heading font. Tried the condensed face from the home page cards and it read badly at every size here, so headlines keep the display face throughout. Worth walking Zach through in person, since his note asked for the condensed treatment. Ligatures are now off everywhere, which does match the live site and is a keeper.
+- [x] 2. Heading font, resolved. Inspected a real article hero on the live site directly: it uses Kepler Std Condensed Subhead at weight 600, a tight 1 to 1 line height, and 0.07px letter spacing. That exact style is now applied to the lead story headline only. Every other headline, the rail, the river, the subtopic list, keeps the display face as before, since the live category list itself does not use the condensed face.
 - [ ] 3. Slightly more space above the links than below.
 - [ ] 4. App bar item, flagged as not strictly page related.
 - [x] 5. Newsletter placement. Resolved in the July 27 review: keep the newsletter, keep Seen around campus, give the photo module its own spot.
