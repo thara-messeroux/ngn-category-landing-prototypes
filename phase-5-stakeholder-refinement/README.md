@@ -37,7 +37,7 @@ Sixteen comments, all still marked active. Comment 1 is praise for the Most Read
 Pastel board: https://usepastel.com/link/4wejp064/
 
 - [x] 1. "This is a better use of these numbers." Praise for the Most Read numeral redesign, no action needed.
-- [x] 2. Heading text now matches the home page cards, Kepler Std Condensed Subhead. Checked the live site directly rather than guessing: the real weight is 600 with ligatures turned off, not 500 with ligatures on, which is what made the first pass look compressed. Corrected and confirmed against the live computed style.
+- [x] 2. Heading text matches the home page cards, but only on the featured card, which is where the note was pinned. Checked the live site: the home page cards use Kepler Std Condensed Subhead at 600, while the live category page uses plain Kepler Std for its story list. Applying the condensed face to every headline made the lists look squeezed, so it is now scoped to the featured card and the rest keep the display face. Ligatures are off everywhere, matching the live site.
 - [ ] 3. Slightly more space above the links than below.
 - [ ] 4. App bar item, flagged as not strictly page related.
 - [x] 5. Newsletter placement. Resolved in the July 27 review: keep the newsletter, keep Seen around campus, give the photo module its own spot.
