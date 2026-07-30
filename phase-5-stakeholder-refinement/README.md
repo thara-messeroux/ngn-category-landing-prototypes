@@ -26,7 +26,7 @@ Present: Zach Christensen, Stephanie Sim, Denis Skarep. The design was well rece
 - [x] Every video links to its real page on the live site, checked.
 
 ### Subtopic pages
-- [ ] Remove the title redundancy. "University News" and the topic name (Commencement, for example) each repeat several times on one page.
+- [x] Removed the title redundancy. A subtopic page said University News four times and the topic name three. The line under the title that only restated the section is gone, More University News is now More stories, and the archive link names where it goes rather than repeating the heading above it. Down to two visible mentions of each.
 - [ ] Add treatment or highlighted hierarchy at the top of the page to feature the most recent images.
 
 ## Zach's July 24 Pastel review
