@@ -33,7 +33,7 @@ Present: Zach Christensen, Stephanie Sim, Denis Skarep. The design was well rece
 - [ ] Add treatment or highlighted hierarchy at the top of the page to feature the most recent images.
 
 ### Section headers (added July 30)
-- [x] Section band headers now use the design system pattern from the live site instead of a serif heading with a leader line. Inspected the real markup on the home page: a hairline divider, then a bold uppercase Lato title at 13.6px on the left, and a black square cornered See All button on the right. Applied to Most Read, Video, and Seen around campus so all three match the rest of the site.
+- [x] Section band headers now use the design system pattern from the live site instead of a serif heading with a leader line. Inspected the real markup on the home page: a hairline divider, then a bold uppercase Lato title at 13.6px on the left, and a black square cornered See All button on the right. Applied everywhere a section bar appears: Most Read, Video, Seen around campus, each topic group on the landing page, and the archive link on subtopic pages. The red arrow text links are gone. Most Read carries no button, since it has no archive to point at.
 
 ## Zach's July 24 Pastel review
 
