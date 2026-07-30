@@ -19,6 +19,8 @@ Present: Zach Christensen, Stephanie Sim, Denis Skarep. The design was well rece
 
 ### Video (added July 28)
 - [x] A Video section, giving the videographers a home the way Seen around campus does for the photographers. Full width, three columns, six videos: each column leads with one video and carries a second beneath it. Every frame keeps its true 16 by 9 shape and shows its running time.
+- [x] The three most recent videos lead each column at full size. The next three sit beneath them as smaller cards, so the section is ordered by recency rather than by an arbitrary choice.
+- [x] All videos points at the real Video Archives page on the live site.
 - [x] Placed between Most Read and The Latest, so the page alternates between news and media rather than stacking both media sections together.
 - [ ] Confirm the videographer names. Each video now carries a byline in the same style as the photo module. The names shown are placeholders and need to be replaced with whoever actually shot each piece before this goes any further.
 
