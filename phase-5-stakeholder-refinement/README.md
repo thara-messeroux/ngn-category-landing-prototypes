@@ -32,6 +32,9 @@ Present: Zach Christensen, Stephanie Sim, Denis Skarep. The design was well rece
 - [ ] Search within a topic, raised by Stephanie for finding older stories. The header search already covers the whole site, so the suggestion is to build this into the archive page rather than adding a second search box here. Revisit once real story volumes per topic are known.
 - [ ] Add treatment or highlighted hierarchy at the top of the page to feature the most recent images.
 
+### Section headers (added July 30)
+- [x] Section band headers now use the design system pattern from the live site instead of a serif heading with a leader line. Inspected the real markup on the home page: a hairline divider, then a bold uppercase Lato title at 13.6px on the left, and a black square cornered See All button on the right. Applied to Most Read, Video, and Seen around campus so all three match the rest of the site.
+
 ## Zach's July 24 Pastel review
 
 Sixteen comments, all still marked active. Comment 1 is praise for the Most Read numerals, the other fifteen are actionable and tracked here.
