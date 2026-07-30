@@ -35,6 +35,13 @@ Present: Zach Christensen, Stephanie Sim, Denis Skarep. The design was well rece
 ### Section headers (added July 30)
 - [x] Section band headers now use the design system pattern from the live site instead of a serif heading with a leader line. Inspected the real markup on the home page: a hairline divider, then a bold uppercase Lato title at 13.6px on the left, and a black square cornered See All button on the right. Applied everywhere a section bar appears: Most Read, Video, Seen around campus, each topic group on the landing page, and the archive link on subtopic pages. The red arrow text links are gone. Most Read carries no button, since it has no archive to point at.
 
+### Seen around campus, carousel (July 30)
+- [x] Rebuilt as the same expanding carousel used on feature articles, for example the SpongeBob 25th anniversary piece. One frame open at 600px with the neighbours collapsed beside it, click a frame or a dot to open it, drag to move. On phones it becomes a plain vertical stack with the captions always showing, which reads better than a carousel at that width.
+- [x] Adapted to the NGN system rather than copied: square corners instead of the 48px radius, Kepler for the captions instead of Segoe UI, and design tokens instead of hardcoded greys.
+- [x] Six real campus photos with their real titles and links, up from three.
+
+Note for the dev handoff: this carousel is not currently a shared component. On the live site its CSS and JS are inline in that single article, not in the theme, so building it into the category page means creating the component properly rather than reusing an existing one.
+
 ## Zach's July 24 Pastel review
 
 Sixteen comments, all still marked active. Comment 1 is praise for the Most Read numerals, the other fifteen are actionable and tracked here.
