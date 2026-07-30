@@ -26,7 +26,8 @@ Present: Zach Christensen, Stephanie Sim, Denis Skarep. The design was well rece
 - [x] Every video links to its real page on the live site, checked.
 
 ### Subtopic pages
-- [x] Removed the title redundancy. A subtopic page said University News four times and the topic name three. The line under the title that only restated the section is gone, More University News is now More stories, and the archive link names where it goes rather than repeating the heading above it. Down to two visible mentions of each.
+- [x] Removed the title redundancy. A subtopic page said University News four times and the topic name three. Cut: the line under the title that only restated the section, More University News (now More stories), the archive link repeating the heading above it, and the separate Back to University News link, since the sticky bar title already does that exact job and is already clickable. University News now appears once.
+- [ ] Photo forward opening for subtopic pages, still open. Give the newest stories more visual weight at the top instead of a uniform list.
 - [ ] Add treatment or highlighted hierarchy at the top of the page to feature the most recent images.
 
 ## Zach's July 24 Pastel review
