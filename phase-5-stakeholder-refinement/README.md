@@ -18,7 +18,8 @@ Present: Zach Christensen, Stephanie Sim, Denis Skarep. The design was well rece
 - [x] Keep the newsletter sticky, and move Seen around campus to its own placement. The newsletter is now alone in the sticky rail.
 
 ### Video (added July 28)
-- [x] Adaptive lead. When a category has a recent video, the video takes the lead slot in the featured package, with the headline set over the frame. When there is none, the usual photo lead appears instead. The right hand stories stay in place either way, so the page keeps one structure. A toggle in the corner of the prototype switches between both states.
+- [x] A Video section, giving the videographers a home the way Seen around campus does for the photographers. Full width, three columns, six videos: each column leads with one video and carries a second beneath it. Every frame keeps its true 16 by 9 shape and shows its running time.
+- [x] Placed between Most Read and The Latest, so the page alternates between news and media rather than stacking both media sections together.
 - [ ] Confirm the videographer credit. The hero shows a credit line, currently a placeholder, that should carry the videographer name the way the photo module carries the photographer.
 
 ### Subtopic pages
