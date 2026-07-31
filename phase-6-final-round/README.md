@@ -18,6 +18,7 @@ Target: this is the last design round. No further design reviews are planned. Wh
   - [ ] Give it a treatment that is more visual and distinctive than a plain button, so it reads as a doorway to a new page and it is obvious what happens on click.
 - [ ] **Model the case where a subtopic has no page of its own.** Not every subtopic will have a dedicated page, and the categories are still being defined, so the design needs to show what a subtopic without a destination looks like. Experiential Learning is the suggested example. Right now every subtopic behaves as though it has a page.
 - [x] **Remove the More topics bar at the bottom of the page.** Raised as redundant with the menu bar. Checked and it was: the topic nav is sticky and stays on screen at the bottom of the page, carrying the same seven topics. Removed the `.tv-more` block, its stylesheet, and the script that filled in its topic chips. The archive link above it is untouched and is now the last element in the subtopic view. See the note below on what to watch for.
+- [x] **Center the sticky nav bar's contents.** Flagged during this round: the topic links sat with more space above them than below. The bar's own padding was already even top and bottom; the cause was `align-items: baseline` aligning the smaller topic links to the large serif title's text baseline instead of centering them as a block. Changed to `align-items: center`. Desktop only, since mobile already uses its own stacked layout and was not affected.
 
 ### On removing the More topics bar
 
