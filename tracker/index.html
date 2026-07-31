@@ -38,7 +38,7 @@ body{
 .wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--sp-5)}
 
 /* Masthead */
-.masthead{border-top:4px solid var(--red);padding:var(--sp-7) 0 var(--sp-6)}
+.masthead{border-top:4px solid var(--red);padding:var(--sp-7) 0 0}
 .eyebrow{
   font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
   color:var(--red);margin:0 0 var(--sp-3)
@@ -65,7 +65,7 @@ h1{
 
 /* Section bar, the prototype's own pattern */
 .bar{
-  display:flex;align-items:baseline;gap:var(--sp-4);
+  display:flex;align-items:baseline;gap:var(--sp-4);flex-wrap:wrap;
   border-top:1px solid var(--rule);padding-top:var(--sp-3);
   margin:var(--sp-8) 0 var(--sp-5)
 }
@@ -237,6 +237,8 @@ h1{
 @media (width < 620px){
   .wrap{padding:0 var(--sp-4)}
   .gauges{grid-template-columns:1fr}
+  .bar{gap:var(--sp-2)}
+  .bar .bar__aside{flex:1 0 100%}
   .bar{margin-top:var(--sp-7)}
   .done ul{padding-left:var(--sp-6)}
   .links a{padding:8px 12px;font-size:11px}
