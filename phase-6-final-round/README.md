@@ -8,11 +8,30 @@ Status: active, opened Friday, July 31, 2026. Started as an exact copy of phase-
 
 Target: this is the last design round. No further design reviews are planned. When everything below is closed, the work moves to development.
 
-## New feedback from the final stakeholder round
+## New feedback from the final stakeholder round, July 31
 
-Not yet recorded. Add each item here as a checkbox with the name of who raised it, then work through them.
+- [ ] **Remove the Video section for now.** It was built in Phase 5 and is being pulled, not changed. Keep the Phase 5 build as the record so it can be brought back without redoing it.
+- [ ] **Seen around campus belongs to University News only.** Other categories do not carry a campus photo module. The module is currently drawn as though every category has one.
+- [ ] **Build a second category page that has no Seen around campus**, so the difference between a category with the module and one without is visible side by side. Which category to use has not been chosen yet.
+- [ ] **The "All Co-op stories" and "All Commencement stories" buttons are being confused with "Load More".** Several people read them as the same control. They sit directly under the Load More bar and both look like a button, so nothing signals that one loads more of the same page and the other leaves for a different page. Two parts to the fix, both requested:
+  - [ ] Move the link higher up the page, possibly under the newsletter box, so it is not adjacent to Load More.
+  - [ ] Give it a treatment that is more visual and distinctive than a plain button, so it reads as a doorway to a new page and it is obvious what happens on click.
+- [ ] **Model the case where a subtopic has no page of its own.** Not every subtopic will have a dedicated page, and the categories are still being defined, so the design needs to show what a subtopic without a destination looks like. Experiential Learning is the suggested example. Right now every subtopic behaves as though it has a page.
+- [ ] **Remove the More topics bar at the bottom of the page.** Raised as redundant with the menu bar. Checked and it is: the topic nav is sticky and is still on screen when you reach the bottom of the page, carrying the same seven topics, so the bar repeats a list the reader can already see. Recommend removing it. See the note below on what to watch for.
 
-- [ ]
+### On removing the More topics bar
+
+Agreeing with this, with one thing to keep an eye on. The bar is genuinely redundant, and that is verified rather than assumed: at the very bottom of the page the sticky nav is still visible and holds the same topics. Repeating them adds nothing.
+
+What it does do is give the page an ending. Take it away and the last thing on the page is a topic section, which can feel like the page just stops. If that reads badly once it is gone, the answer is not to put the bar back but to give the page a proper close, and the newly designed link to the full archive is the obvious candidate for that job.
+
+## Answered by stakeholders, July 31
+
+These were open questions waiting on a person. They now have answers.
+
+- [x] **Do not show photographer names.** This removes the module's dependency on the names that were inferred from filenames and never verified, so that risk is gone.
+- [x] **Seen around campus shows the latest first, for now.** Newest first rather than an editor's pick. "For now" is theirs, so treat it as a decision that may be revisited rather than a permanent rule.
+- [x] **The current heading font stays.** Zach's Pastel comment 2 is closed. The condensed face is not being adopted. The ligature fix made during that work was a genuine improvement and stays.
 
 ## Carried over from Phase 5, still open
 
@@ -21,17 +40,17 @@ These were logged during Phase 5 and were not closed before it was frozen.
 - [ ] Photo forward opening for subtopic pages. Give the newest stories more visual weight at the top instead of a uniform list.
 - [ ] Add treatment or highlighted hierarchy at the top of subtopic pages to feature the most recent images. Related to the item above; both were raised on July 27.
 - [ ] Search within a topic, raised by Stephanie Sim for finding older stories. The header search already covers the whole site, so the standing suggestion is to build this into the archive page rather than adding a second search box on the category page. Revisit once real story volumes per topic are known.
-- [ ] Confirm the photographer names shown in the prototype. They were inferred from image filename initials and have never been checked against the real credits. This needs someone from the photo desk to confirm before the module goes further.
-- [ ] Confirm whether Seen around campus should be newest first or an editor's pick. The module currently shows the five most recent, matching the rule the video section uses. This is a photo desk decision.
+- [x] Photographer names. Answered on July 31: do not show them.
+- [x] Newest first or editor's pick for Seen around campus. Answered on July 31: newest first for now.
 - [ ] Most Read sits 40px below its section rule where every other section sits at 24px. Left alone in Phase 5 because it was outside that pass. One line to bring in.
 
 ## Zach's July 24 Pastel review, still open
 
 Board: https://usepastel.com/link/4wejp064/
 
-Comments 1 and 5 are closed, and the header work is done. Comment 2 was reopened, see the note. The rest are untouched.
+Comments 1, 2 and 5 are closed and the header work is done. The rest are untouched.
 
-- [ ] 2. Heading font. Reopened, needs a conversation with Zach rather than a silent decision. The condensed face was applied as he asked, first to all headlines and then only to the lead, and it was rejected both times on the look. What is verified: a real article hero on the live site does use Kepler Std Condensed Subhead at weight 600, 1 to 1 line height, 0.07px letter spacing, but the live category list does not use the condensed face at all. The ligature fix from that work was a genuine improvement and was kept.
+- [x] 2. Heading font. Closed on July 31: the current font stays and the condensed face is not being adopted. For the record, a real article hero on the live site does use Kepler Std Condensed Subhead at weight 600, 1 to 1 line height, 0.07px letter spacing, but the live category list does not use the condensed face at all. The ligature fix from that work was kept.
 - [ ] 3. Slightly more space above the links than below.
 - [ ] 4. App bar item, flagged by Zach as not strictly page related.
 - [ ] 6. "We can drop this." Needs Zach to point at the element, unclear from the comment alone.
