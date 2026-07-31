@@ -23,6 +23,17 @@ Designer: Thara Messeroux.
 - Phase 5: https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-5-stakeholder-refinement/
 - Phase 6, current: https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-6-final-round/
 
+**On Thara's Mac.** Open Claude Code from `/Users/t.messeroux/Documents/Northeastern_University/ngn-local-environment`. That exact folder is what the stored memory files are keyed to, so opening anywhere else loses them.
+
+The prototype branch is checked out in its own worktree at `category-landing-work/` inside that folder, so the work is always available without disturbing whatever branch `environment/` happens to be on. Files are at `category-landing-work/private/prototypes/category-landing/`. If that folder is ever missing, recreate it with:
+
+```
+cd /Users/t.messeroux/Documents/Northeastern_University/ngn-local-environment/environment
+git worktree add ../category-landing-work chore-category-landing-prototypes
+```
+
+Never switch `environment/` itself onto this branch. It carries other in-flight work.
+
 **Zach's Pastel review board:** https://usepastel.com/link/4wejp064/
 
 **Reference component** the Seen around campus carousel was rebuilt from: https://news.northeastern.edu/2025/10/22/spongebob-25th-anniversary-tv-culture/
