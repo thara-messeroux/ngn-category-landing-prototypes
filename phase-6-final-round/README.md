@@ -43,7 +43,7 @@ These were logged during Phase 5 and were not closed before it was frozen.
 - [ ] Search within a topic, raised by Stephanie Sim for finding older stories. The header search already covers the whole site, so the standing suggestion is to build this into the archive page rather than adding a second search box on the category page. Revisit once real story volumes per topic are known.
 - [x] Photographer names. Answered on July 31: do not show them.
 - [x] Newest first or editor's pick for Seen around campus. Answered on July 31: newest first for now.
-- [ ] Most Read sits 40px below its section rule where every other section sits at 24px. Left alone in Phase 5 because it was outside that pass. One line to bring in.
+- [x] Most Read sits 40px below its section rule where every other section sits at 24px. Checked on July 31: it is already 24px, measured against the rendered page at 1440, 768 and 375, matching Seen around campus exactly. Something upstream of this note, most likely the Phase 5 section header rebuild, already fixed it. No change made here since there was nothing left to change.
 
 ## Zach's July 24 Pastel review, still open
 
