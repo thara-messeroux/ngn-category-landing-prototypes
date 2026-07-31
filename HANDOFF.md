@@ -69,11 +69,13 @@ Full detail with the reasoning for each is in `phase-5-stakeholder-refinement/RE
 
 The live list is in `phase-6-final-round/README.md`. Summary:
 
-**Feedback from the final round** is not recorded yet. That is the first thing to capture in Phase 6.
+**From the final round, July 31, the main body of work:** pull the Video section for now; scope Seen around campus to University News only; build a second category page without it so the two can be compared; move and redesign the subtopic archive link, which people are confusing with Load More; model a subtopic that has no page of its own; and drop the More topics bar at the bottom.
 
-**Carried over from Phase 5:** photo forward opening for subtopic pages; highlighted hierarchy for recent images at the top of subtopic pages; search within a topic, raised by Stephanie, currently proposed for the archive page rather than the category page; confirming the photographer names, which were inferred from filename initials and never verified; confirming whether Seen around campus should be newest first or an editor's pick; and Most Read's 40px top gap where every other section is at 24px.
+**Carried over from Phase 5:** photo forward opening for subtopic pages; highlighted hierarchy for recent images at the top of subtopic pages; search within a topic, raised by Stephanie, currently proposed for the archive page rather than the category page; and Most Read's 40px top gap where every other section is at 24px.
 
-**Zach's Pastel board:** comments 1 and 5 closed, 2 reopened and needing a conversation with him, and 3, 4, 6 to 16 untouched. Items 8 and 12 may already be answered by the two column shape built in Phase 5 and are worth checking against the current build first.
+**Zach's Pastel board:** comments 1, 2 and 5 closed, and 3, 4, 6 to 16 untouched. Items 8 and 12 may already be answered by the two column shape built in Phase 5 and are worth checking against the current build first.
+
+**Answered on July 31, no longer open:** photographer names are not shown at all; Seen around campus is newest first for now; the current heading font stays, which closes Zach's comment 2.
 
 ## For development, do not lose this
 
@@ -95,3 +97,17 @@ Conventions worth keeping, because they were arrived at deliberately:
 - **Keep the phase README current** as work lands, with the reasoning and not just the change. It is the record stakeholders and the eventual developer read.
 - **Writing style:** plain and human, no em dashes, no emoji. Say what changed and why.
 - **Editorial, content and photo desk decisions are not the designer's or the assistant's to make.** Surface them and let the team decide. Several open items above are exactly this.
+
+## How Thara works, and what she expects
+
+She is the designer on this, presenting to a mixed group of editors, developers and marketing people. What has worked over the last two weeks:
+
+- **Rate things and say why.** She often asks for a score out of 10 and a reason, and she asks it about placement and hierarchy as much as about visuals. Give a real opinion with a recommendation, not a list of options.
+- **Plain language, and check it landed.** When something is technical, explain it the way she would repeat it to a stakeholder. She will ask for layman's terms if it is not clear, which means the first answer was too dense.
+- **Never guess and never invent.** She has caught invented links and unverified names, and it costs her credibility in the room. Check against the real site or the real file, and say plainly which claims are verified and which are not.
+- **Show the work in a real browser.** Layout claims get checked at real breakpoints before being called done. She works from screenshots of the live link, so a stale deploy reads as a broken fix.
+- **Responsive is not optional.** Every change is expected to hold up across screen sizes without being asked.
+- **She thinks about the presentation.** She will be asked to defend these choices, so give her the reasoning she can repeat, and flag the questions a stakeholder is likely to ask. Before a review, offering to run through likely questions with her is welcome.
+- **She wants to be told when something is not a design decision.** Editorial and content calls should be named as such and pushed to the right person early, not discovered as blockers at the end.
+- **Writing style:** plain and human, no em dashes, no emoji, no jargon for its own sake.
+- **Keep the tracker current and push after every change**, so the live link always matches what is being discussed.
