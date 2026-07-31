@@ -4,9 +4,9 @@
 
 https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-5-stakeholder-refinement/
 
-Status: active. Started as an exact copy of phase-4-mobile-refinement, the version presented on July 27, 2026. Phase 4 stays untouched as the record of what was shown. All new work happens here.
+Status: frozen on Friday, July 31, 2026, as the record of what was reviewed on July 30. Work continues in [`phase-6-final-round/`](../phase-6-final-round/). Anything still open when this was frozen is carried over there, so this file is a record and not a live list.
 
-Target: the final review on Thursday, July 30, 2026, where the design is expected to be ready to hand off for development.
+Started as an exact copy of phase-4-mobile-refinement, the version presented on July 27, 2026. Phase 4 stays untouched as the record of what was shown then.
 
 ## Decided in the July 27 stakeholder review
 

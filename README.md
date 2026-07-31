@@ -1,17 +1,5 @@
 # Category landing page prototypes (PROTOTYPE ONLY)
 
-## Live previews (public, no login)
-
-Open in any browser, no account needed.
-
-| Phase | Public link |
-| --- | --- |
-| Phase 1: First concepts | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-1-concepts/ |
-| Phase 2: Live data | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-2-live-data/ |
-| Phase 3: Combined design (presented) | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-3-synthesis/ |
-| Phase 4: Mobile refinement (presented July 27) | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-4-mobile-refinement/ |
-| Phase 5: Stakeholder refinement (current) | https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-5-stakeholder-refinement/ |
-
 Six static HTML explorations of a redesigned category landing page
 (`/category/university-news/` as the example), built strictly from
 design-system-v2 tokens and existing component vocabulary. Nothing here
@@ -71,10 +59,13 @@ Interactive pages that let you switch between options with a pill at the bottom.
 | `phase-2-live-data/` | Phase 2, July 21 to 22 | Frozen | Four directions (Section front, Briefing, Reader, Magazine) with live stories and photos, working section switching across 4 categories, clickable topic pages, and a paginated archive. Fonts are embedded, so it works offline. |
 | `phase-3-synthesis/` | Phase 3, July 23 | Frozen. Presented to stakeholders. | Zach's composite base (`08-composite-v3.html`) combined with Thara's Option 2 and 3 elements (Most Read rail, all-newsletters chooser), the NGN section bar system, and clickable subtopic pages with an archive grid. |
 | `phase-4-mobile-refinement/` | Phase 4, July 23 to 24 | Frozen. Presented July 27. | Zach's sticky header, the merged Daily newsletter (Monday to Saturday), the Most Read redesign, a working site menu and search, and a full mobile pass at phone width. |
-| `phase-5-stakeholder-refinement/` | Phase 5, from July 28 | Active | Continues from Phase 4 for the Thursday, July 30, 2026 final review. |
+| `phase-5-stakeholder-refinement/` | Phase 5, July 28 to 30 | Frozen. Presented July 30. | The July 27 stakeholder decisions: a dedicated featured spot for Seen around campus, a Video section for the videographers, section headers rebuilt on the live design system pattern, subtopic page cleanup, and the Seen around campus carousel rebuilt from the real article component. |
+| `phase-6-final-round/` | Phase 6, from July 31 | Active | Continues from Phase 5 with the feedback from the final stakeholder round. Last design round before development. Carries the Phase 5 items that were still open and Zach's remaining Pastel comments. |
 | `shared/` | | | Prototype masthead (minimal app bar and section nav) and footer with the real NGN logo SVGs. |
 
-Live previews (open in a browser): [Phase 1](https://claude.ai/code/artifact/2e2b272c-e653-4137-b25e-842fc698241f), [Phase 2](https://claude.ai/code/artifact/8c115f85-1cd6-4748-89f2-5bac57e920c1), [Phase 3](https://claude.ai/code/artifact/2f32b15a-ee01-4a2f-86a6-addb44696513), [Phase 4](https://claude.ai/code/artifact/9a299877-4ab2-4ee0-bf5e-91a4da8f654b). These are Thara's hosted previews; ask Thara if a link needs sharing access.
+Live previews (public, open in any browser, no login needed): [Phase 1](https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-1-concepts/), [Phase 2](https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-2-live-data/), [Phase 3](https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-3-synthesis/), [Phase 4](https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-4-mobile-refinement/), [Phase 5](https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-5-stakeholder-refinement/), [Phase 6](https://thara-messeroux.github.io/ngn-category-landing-prototypes/phase-6-final-round/). These are served from a public mirror of this folder so they can be opened in incognito or embedded in Pastel.
+
+Each phase folder keeps its own `README.md` with the decisions made in that phase and the reasoning behind them. The active phase's README is the working checklist; frozen phases are records. [`HANDOFF.md`](HANDOFF.md) is the one-page summary of where the work stands, written to be handed to a new session or a new person.
 
 How to view: serve this folder (`python3 -m http.server`) or open any phase's `index.html` directly. Fonts are embedded, so no network is needed. Phase 1 needs the folder structure kept intact for `shared/ngn-shell.js`.
 
