@@ -17,7 +17,7 @@ Target: this is the last design round. No further design reviews are planned. Wh
   - [ ] Move the link higher up the page, possibly under the newsletter box, so it is not adjacent to Load More.
   - [ ] Give it a treatment that is more visual and distinctive than a plain button, so it reads as a doorway to a new page and it is obvious what happens on click.
 - [ ] **Model the case where a subtopic has no page of its own.** Not every subtopic will have a dedicated page, and the categories are still being defined, so the design needs to show what a subtopic without a destination looks like. Experiential Learning is the suggested example. Right now every subtopic behaves as though it has a page.
-- [ ] **Remove the More topics bar at the bottom of the page.** Raised as redundant with the menu bar. Checked and it is: the topic nav is sticky and is still on screen when you reach the bottom of the page, carrying the same seven topics, so the bar repeats a list the reader can already see. Recommend removing it. See the note below on what to watch for.
+- [x] **Remove the More topics bar at the bottom of the page.** Raised as redundant with the menu bar. Checked and it was: the topic nav is sticky and stays on screen at the bottom of the page, carrying the same seven topics. Removed the `.tv-more` block, its stylesheet, and the script that filled in its topic chips. The archive link above it is untouched and is now the last element in the subtopic view. See the note below on what to watch for.
 
 ### On removing the More topics bar
 
