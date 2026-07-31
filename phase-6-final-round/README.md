@@ -10,7 +10,7 @@ Target: this is the last design round. No further design reviews are planned. Wh
 
 ## New feedback from the final stakeholder round, July 31
 
-- [ ] **Remove the Video section for now.** It was built in Phase 5 and is being pulled, not changed. Keep the Phase 5 build as the record so it can be brought back without redoing it.
+- [x] **Remove the Video section for now.** Removed the `.vband` markup and its dedicated stylesheet block. Phase 5 keeps the full build as the record, so it can come back without redoing the work.
 - [ ] **Seen around campus belongs to University News only.** Other categories do not carry a campus photo module. The module is currently drawn as though every category has one.
 - [ ] **Build a second category page that has no Seen around campus**, so the difference between a category with the module and one without is visible side by side. Which category to use has not been chosen yet.
 - [ ] **The "All Co-op stories" and "All Commencement stories" buttons are being confused with "Load More".** Several people read them as the same control. They sit directly under the Load More bar and both look like a button, so nothing signals that one loads more of the same page and the other leaves for a different page. Two parts to the fix, both requested:
