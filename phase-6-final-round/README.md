@@ -32,6 +32,12 @@ Target: this is the last design round. No further design reviews are planned. Wh
 
   Both shells now set the column gap and the row gap separately: the column gap stays 48px so desktop is untouched, and the row gap is 32px so the stacked mobile order matches the card rhythm. Measured after the change: 32px on both pages, the same as the gap between story cards, down from 96px and 48px. Desktop re-measured to confirm nothing moved, including the 48px that still sits below the shell before More stories.
 
+- [x] **The space above and below the newsletter box now matches, at 32px.** Fixing the gap above it left the space below it at 48px, so the box sat off centre between its neighbours. The 48px was not one rule but three different ones depending on which page you were on: Seen around campus carries its own top margin on the landing page, the More stories heading carried an inline 48px on subtopic pages, and on Arts and Entertainment a topic section opens the space instead, since that page has no campus band. All three are now 32px on mobile and unchanged on desktop, where the newsletter sits beside the stories rather than below them and the wider section rhythm is correct. Commencement's campaign card, the one thing that sits below the newsletter rather than after it, moved from 24px to 32px for the same reason.
+
+  Measured after the change: 32px above and below on the landing page and on all seven University News subtopics, including Commencement with its card, and on Arts and Entertainment. Desktop confirmed unmoved at 48px throughout.
+
+- [x] **Real bug found while measuring this: a stray unclosed brace was disabling a block of mobile styles.** A `@media (prefers-reduced-motion: reduce)` wrapper was left open and had swallowed the `@media (width < 840px)` block that follows it, so Seen around campus kept its desktop padding on phones and its heading kept its desktop size, unless a visitor happened to have reduced motion switched on. Closing the wrapper restored both. Worth knowing at handoff: this was invisible on the page because the values it should have applied were smaller, not different in kind. Every stylesheet block in both files is now brace balanced, checked programmatically rather than by eye.
+
 ## New feedback from the final stakeholder round, July 31
 
 - [x] **Remove the Video section for now.** Removed the `.vband` markup and its dedicated stylesheet block. Phase 5 keeps the full build as the record, so it can come back without redoing the work.
