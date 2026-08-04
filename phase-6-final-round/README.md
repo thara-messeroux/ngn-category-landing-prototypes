@@ -8,6 +8,26 @@ Status: active, opened Friday, July 31, 2026. Started as an exact copy of phase-
 
 Target: this is the last design round. No further design reviews are planned. When everything below is closed, the work moves to development.
 
+## Live stories, August 4
+
+- [x] **Root cause of the old stories, and of photo captions showing up as headlines: the pages were reading the wrong post type.** Articles on this site are a custom type called `newspost`. The built-in WordPress `post` type still holds the retired photo-of-the-day and video items, and nothing else recent. So `/wp-json/wp/v2/posts` answered with the newest thing it had, which was a string of one-line photo captions from the Seen around campus module, while every real article was invisible to it. Both prototypes now read `/wp-json/wp/v2/newspost`. That single change is what fixed the stale dates and the captions-as-headlines problem at the same time; they were never two separate faults.
+
+  One headline that still reads "Photos: ..." is a genuine article, not a caption: the weekly photo round-up runs about 1,600 words and appears on the real University News page. It is meant to be there.
+
+- [x] **Every story section is now live, newest first, and refreshes on each page load.** Previously only the featured band and The Latest were live. Now the four topic bands lower down the landing page each fetch their own tag, and each subtopic page fetches its own tag for both The Latest and More stories. Nothing is hardcoded to a date any more. Verified section by section in a browser against the real API: all four bands moved from 2023 and 2024 captures to 2026, and all seven subtopic pages show their own distinct stories in descending date order rather than the one shared list they showed before.
+
+- [x] **Captured stories are still what a reader without a connection sees.** The prototypes stay self-contained single files, so every fetch is additive: it replaces captured markup only on success. Verified by neutering the network calls and reloading, which leaves all four bands, the featured band, The Latest, Most Read, Seen around campus and every subtopic page intact, with Load More still working.
+
+- [x] **Ordering fixed in the captured fallback too.** The captured stories were grouped by subject rather than by date, which showed on the Arts and Entertainment Books band as July 7, July 6, July 10. Each band now sorts newest first on load regardless of whether the live swap happens.
+
+- [x] **A topic keeps its captured stories when its tag has nothing newer.** The guard added on July 31 still applies per section. Where it fires, that is a real content gap rather than a prototype fault, and it is worth knowing before the review:
+
+  - **Sparse tags on University News.** Co-op is current, newest August 3. Experiential Learning stops at July 10, President Aoun at June 5, Events at April 16. Those are genuinely the newest articles carrying those tags.
+  - **Sparse tags on Arts and Entertainment.** Movies, Music and Video Games are reasonably current. Television stops at February, Books at May, Theater at January, Streaming at July 2025.
+  - **One inconsistency this creates, worth a decision.** A band keeps its curated stories when they are fresher than its tag, but the subtopic page behind the same heading always shows the pure tag feed. So Books shows July stories in the band and May stories on its own page. Whether a section should favour the fresher curated mix or match its tag exactly is an editorial call, not an engineering one.
+
+- [x] **Today's date reads the visitor's own clock**, so it is correct whenever the page is opened rather than frozen at the build date.
+
 ## New feedback from the final stakeholder round, July 31
 
 - [x] **Remove the Video section for now.** Removed the `.vband` markup and its dedicated stylesheet block. Phase 5 keeps the full build as the record, so it can come back without redoing the work.
