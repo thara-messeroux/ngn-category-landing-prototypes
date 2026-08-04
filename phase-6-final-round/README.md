@@ -28,6 +28,10 @@ Target: this is the last design round. No further design reviews are planned. Wh
 
 - [x] **Today's date reads the visitor's own clock**, so it is correct whenever the page is opened rather than frozen at the build date.
 
+- [x] **Real bug fixed: the gap above the newsletter box on mobile was two spacings stacked.** Reported as one gap, it was two different faults. On a subtopic page the story list carried a 48px bottom margin and the two column shell it sits in carried a 48px row gap, so the two added up to 96px. The margin was redundant, since the shell gap already owns that separation, and it is gone. On the landing page the same shell contributed a single 48px, which is correct as a gap between two columns on desktop but too wide once they stack into one column on mobile, where the story cards sit 32px apart.
+
+  Both shells now set the column gap and the row gap separately: the column gap stays 48px so desktop is untouched, and the row gap is 32px so the stacked mobile order matches the card rhythm. Measured after the change: 32px on both pages, the same as the gap between story cards, down from 96px and 48px. Desktop re-measured to confirm nothing moved, including the 48px that still sits below the shell before More stories.
+
 ## New feedback from the final stakeholder round, July 31
 
 - [x] **Remove the Video section for now.** Removed the `.vband` markup and its dedicated stylesheet block. Phase 5 keeps the full build as the record, so it can come back without redoing the work.
