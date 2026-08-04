@@ -8,6 +8,10 @@ Status: active, opened Friday, July 31, 2026. Started as an exact copy of phase-
 
 Target: this is the last design round. No further design reviews are planned. When everything below is closed, the work moves to development.
 
+## Footer alignment, August 4
+
+- [x] **Real bug fixed: the footer's News Hubs sub-menu was indented against every other footer link.** Parents & Families, NGN Research and Faculty & Staff sat 12px right of Contact Us, Faculty Experts and the rest, because `.sub-menu` carried its own left padding that none of the other footer columns have. Checked against the real site, where the sub-menu list has no left padding and every link in the column shares one left edge. Removed the padding to match. Verified flush on mobile and desktop, and confirmed the footer markup is shared verbatim between this file and Arts and Entertainment, so one change closes it on both.
+
 ## Live stories, August 4
 
 - [x] **Root cause of the old stories, and of photo captions showing up as headlines: the pages were reading the wrong post type.** Articles on this site are a custom type called `newspost`. The built-in WordPress `post` type still holds the retired photo-of-the-day and video items, and nothing else recent. So `/wp-json/wp/v2/posts` answered with the newest thing it had, which was a string of one-line photo captions from the Seen around campus module, while every real article was invisible to it. Both prototypes now read `/wp-json/wp/v2/newspost`. That single change is what fixed the stale dates and the captions-as-headlines problem at the same time; they were never two separate faults.
