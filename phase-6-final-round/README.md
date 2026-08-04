@@ -59,8 +59,8 @@ Target: this is the last design round. No further design reviews are planned. Wh
 ## New feedback from the final stakeholder round, July 31
 
 - [x] **Remove the Video section for now.** Removed the `.vband` markup and its dedicated stylesheet block. Phase 5 keeps the full build as the record, so it can come back without redoing the work.
-- [ ] **Seen around campus belongs to University News only.** Other categories do not carry a campus photo module. The module is currently drawn as though every category has one.
-- [ ] **Build a second category page that has no Seen around campus**, so the difference between a category with the module and one without is visible side by side. Which category to use has not been chosen yet.
+- [x] **Seen around campus belongs to University News only.** Confirmed on the live pages, August 4: present on University News, absent on Arts and Entertainment.
+- [x] **Build a second category page that has no Seen around campus.** Arts and Entertainment built as the comparison page, with its own live topic bands (Movies, Music, Video Games, Television, Books, Theater, Streaming) and its own campaign cards. Confirmed working and free of Seen around campus and the Video section, both on the live link.
 - [x] **The "All Co-op stories" and "All Commencement stories" buttons are being confused with "Load More".** Several people read them as the same control. They sit directly under the Load More bar and both look like a button, so nothing signals that one loads more of the same page and the other leaves for a different page. Two parts to the fix, both requested:
   - [x] Move the link higher up the page, possibly under the newsletter box, so it is not adjacent to Load More. Moved into the rail, directly under the newsletter box. Load More is now the last element in the section with nothing beside it.
   - [x] Give it a treatment that is more visual and distinctive than a plain button, so it reads as a doorway to a new page and it is obvious what happens on click. Replaced the filled black pill, the same shape as Load More, with a bordered card and a trailing arrow that shifts on hover.
