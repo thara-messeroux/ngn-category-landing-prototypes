@@ -8,7 +8,11 @@ Status: active, opened Friday, July 31, 2026. Started as an exact copy of phase-
 
 Target: this is the last design round. No further design reviews are planned. When everything below is closed, the work moves to development.
 
-## Footer alignment, August 4
+## Second mobile gap fix, above the newsletter box, August 4
+
+- [x] **Real bug found and fixed: uneven card heights in The Latest were stacking on top of the fixed 32px gap.** The previous pass made the formal gap above the newsletter box a consistent 32px, but on the two-up mobile grid a card's height depends on how many lines its headline wraps to, and live headlines vary in length. Whenever the last row held one two-line and one three-line headline, the shorter card's own content ended roughly 20px above the row's actual bottom edge, and the fixed 32px gap was added on top of that dead space, reading as a much bigger gap than intended. Which two headlines land in the last row changes as stories rotate through, so this was not a one-time layout slip but a live-data-shaped bug that would keep recurring with different headlines.
+
+  Fixed at the root rather than by adjusting the gap again: headlines in the two-up mobile grid now clamp to two lines, so every card in a row is the same height regardless of what the current live headlines happen to be. Verified with six real cards and again with a set of much longer captured headlines, both landing on a uniform 190px card height and an exact 32px gap to the newsletter box. Scoped to the sub-600px breakpoint only; desktop, where The Latest is a single-column list rather than a grid, is unchanged.
 
 - [x] **Real bug fixed: the footer's News Hubs sub-menu was indented against every other footer link.** Parents & Families, NGN Research and Faculty & Staff sat 12px right of Contact Us, Faculty Experts and the rest, because `.sub-menu` carried its own left padding that none of the other footer columns have. Checked against the real site, where the sub-menu list has no left padding and every link in the column shares one left edge. Removed the padding to match. Verified flush on mobile and desktop, and confirmed the footer markup is shared verbatim between this file and Arts and Entertainment, so one change closes it on both.
 
