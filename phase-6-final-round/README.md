@@ -8,6 +8,12 @@ Status: active, opened Friday, July 31, 2026. Started as an exact copy of phase-
 
 Target: this is the last design round. No further design reviews are planned. When everything below is closed, the work moves to development.
 
+## Top masthead shortened, August 4
+
+- [x] **The global NGN masthead is a bit shorter, so University News reads as the main bar.** Requested directly: with two stacked bars at the top, the NGN wordmark bar read as heavy as the category bar below it, when the category bar is the one that matters on this page. The bar's height came from 8px of padding around its icon buttons, which are a standard 48px touch target; shortening the buttons themselves was not the right lever; instead the padding dropped from the design system's 8px spacing token to its existing 4px one, already used elsewhere on this same bar. Total height goes from 64px to 56px, tap targets untouched.
+
+  Fixed one immediate regression this caused: the category bar's sticky offset was hardcoded to 63px, tuned to the old masthead height, so shortening the masthead opened a visible 7px gap between the two bars even before scrolling. Updated to 56px to match exactly. Verified a 0px gap at rest and correct stacking once both bars are scrolled into their stuck position, on both mobile and desktop, on both pages.
+
 ## Most Read refreshed, August 4
 
 - [x] **Most Read now shows five current stories.** Two of the five were from 2023: a blood and solid tumor cancer treatment story and an invasive Connecticut plant story. This module is not live-fetched, and is not going to be: as noted below, the public API has no view-count or ranking data, so there is no real "most read" signal for it to pull. This was a one-time manual refresh of the placeholder picks, not a change to how the module works. Replaced with five real, current articles (August 3 to July 14, 2026), each checked directly against the site for a working image and a real byline before use, kept to the same spread of subject matter as before: a human-interest sports piece, an entertainment piece, a science and tech piece, a health piece, and a lighter lifestyle piece. Images re-encoded at the same size and quality the module's existing pictures use, so the file did not grow.
